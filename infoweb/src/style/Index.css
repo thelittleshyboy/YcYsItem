@@ -1,0 +1,35 @@
+.el-header {
+    background-color: rgb(211, 221, 235);
+    color: #333;
+    font-size: 30px;
+    text-align: left;
+    line-height: 80px;
+  }
+  
+  .el-aside {
+    background-color: #444444;
+    color: #ffffff;
+    text-align: center;
+    line-height: 200px;
+    height: 921px;
+    overflow-y: auto;
+  }
+  
+  .el-main {
+    color: #333;
+    text-align: center;
+    line-height: 160px;
+  }
+  
+  body > .el-container {
+    margin-bottom: 40px;
+  }
+  
+  .el-container:nth-child(5) .el-aside,
+  .el-container:nth-child(6) .el-aside {
+    line-height: 260px;
+  }
+  
+  .el-container:nth-child(7) .el-aside {
+    line-height: 320px;
+  }
