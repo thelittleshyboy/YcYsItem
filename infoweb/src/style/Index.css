@@ -1,5 +1,13 @@
+html,body,#app,.el-container{
+  /*设置内部填充为0，几个布局元素之间没有间距*/
+  padding: 0px;
+   /*外部间距也是如此设置*/
+  margin: 0px;
+}
+
 .el-header {
-    background-color: rgb(211, 221, 235);
+    background-color: white;
+    border-bottom: 1px solid #dce2e4;
     color: #333;
     font-size: 30px;
     text-align: left;
@@ -9,16 +17,15 @@
   .el-aside {
     background-color: #444444;
     color: #ffffff;
-    text-align: center;
-    line-height: 200px;
-    height: 921px;
+    text-align: left;
+    line-height: 100px;
     overflow-y: auto;
   }
   
   .el-main {
     color: #333;
     text-align: center;
-    line-height: 160px;
+    line-height: 40px;
   }
   
   body > .el-container {
