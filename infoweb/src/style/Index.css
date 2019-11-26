@@ -6,6 +6,7 @@ html,body,#app,.el-container{
 }
 
 .el-header {
+    margin-left: 180px;
     background-color: white;
     border-bottom: 1px solid #dce2e4;
     color: #333;
@@ -15,14 +16,17 @@ html,body,#app,.el-container{
   }
   
   .el-aside {
+    position: fixed;
     background-color: #444444;
     color: #ffffff;
     text-align: left;
-    line-height: 100px;
+    line-height: 50px;
     overflow-y: auto;
+    height: 1000px;
   }
   
   .el-main {
+    margin-left: 180px;
     color: #333;
     text-align: center;
     line-height: 40px;

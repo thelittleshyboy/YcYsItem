@@ -10,34 +10,45 @@ var upload = multer({ dest: 'upload/' });
 
 
 //登录
-router.route("/validate").post((req, res) => {
-     let { name, pass } = req.body;
-     User.findOne(
-          {
-               name: name,
-               pass: pass
-          },
-          (err, user) => {
-               if (err) {
-                    console.log(err);
-               }else if(user == null){
-                   res.jsonp(user ? user : {});
+router.route("/login").post((req, res) => {
+     let { name, pass } = req.body
+     console.log(req.body)
+     res.send({
+          status: 'success',
+          data: req.body
+     })
+     // User.findOne(
+     //      {
+     //           name: name,
+     //           pass: pass
+     //      },
+     //      (err, user) => {
+     //           if (err) {
+     //                console.log(err);
+     //           }else if(user == null){
+     //               res.jsonp(user ? user : {});
                     
-               } 
-               else {
+     //           } 
+     //           else {
                    
-                         let sessions = req.session;
-                         sessions.userName = name;
-                         sessions.userID = user._id;
-                         sessions.save();
-                         // console.log("登录时的会话 ID ：", req.sessionID);
-                         // console.log(sessions.userName);
-                         // console.log(sessions.cookie) //以上代码不可与下面的 互换顺序
-                         res.json(user ? user : {});
-               }
+     //                     let sessions = req.session;
+     //                     sessions.userName = name;
+     //                     sessions.userID = user._id;
+     //                     sessions.save();
+     //                     // console.log("登录时的会话 ID ：", req.sessionID);
+     //                     // console.log(sessions.userName);
+     //                     // console.log(sessions.cookie) //以上代码不可与下面的 互换顺序
+     //                     res.json(user ? user : {});
+     //           }
                
-          }
-     );
+     //      }
+     // );
+});
+
+router.route("/logout").post((req, res) => {
+     res.send({
+          status: 'success'
+     })
 });
 //注册
 router.route("/register").post((req, res) => {

@@ -1,4 +1,3 @@
-'use strict'
 // Template version: 1.3.1
 // see http://vuejs-templates.github.io/webpack for documentation.
 
@@ -7,38 +6,24 @@ const path = require('path')
 module.exports = {
   dev: {
     // Paths
+    env: require('./dev.env'),
     assetsSubDirectory: 'static',
     assetsPublicPath: '/',
     proxyTable: {
       '/portal': {
-      target:'http://localhost:3000',
+        target: 'http://localhost:3300',
         //target:被请求的地址
-      changeOrigin:true,
-       //changeOrigin 是否代理
+        changeOrigin:true,
+        //changeOrigin 是否代理
+        pathRewrite: {
+          '^/api': '' //这里理解成用‘/api’代替target里面的地址，后面组件中我们掉接口时直接用api代替 比如我要调用'http://40.00.100.100:3002/user/add'，直接写‘/api/user/add’即可
+        }
       }
     },
     // Various Dev Server settings
     host: 'localhost', // can be overwritten by process.env.HOST
     port: 8080, // can be overwritten by process.env.PORT, if port is in use, a free one will be determined
     autoOpenBrowser: false,
-    errorOverlay: true,
-    notifyOnErrors: true,
-    poll: false, // https://webpack.js.org/configuration/dev-server/#devserver-watchoptions-
-
-    
-    /**
-     * Source Maps
-     */
-
-    // https://webpack.js.org/configuration/devtool/#development
-    devtool: 'cheap-module-eval-source-map',
-
-    // If you have problems debugging vue-files in devtools,
-    // set this to false - it *may* help
-    // https://vue-loader.vuejs.org/en/options.html#cachebusting
-    cacheBusting: true,
-
-    cssSourceMap: true
   },
 
   build: {

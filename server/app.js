@@ -5,7 +5,7 @@ var FileStore = require('session-file-store')(session);
 var app = new express()
 const  bodyParser = require('body-parser')
 var router = require('./router/users');
-const url = "mongodb://localhost:27017/blog"
+const url = "mongodb://localhost:27017/ycyweb"
 
 mongoose.connect(url,{useNewUrlParser:true},(err)=>{
     if(err)console.log(err);
@@ -15,7 +15,7 @@ mongoose.connect(url,{useNewUrlParser:true},(err)=>{
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended:false }))
 app.all('*', function(req, res, next) {
-    res.header("Access-Control-Allow-Origin", "http://localhost:8080");
+    res.header("Access-Control-Allow-Origin", "*");
     res.header("Access-Control-Allow-Headers", "X-Requested-With,Content-Type");
     res.header("Access-Control-Allow-Methods","PUT,POST,GET,DELETE,OPTIONS");
     res.header('Access-Control-Allow-Credentials', true);
@@ -33,11 +33,7 @@ app.use(session({
     },
 }));
 
+app.use('/user',router)  //将路由注册到/user的路径下
 
-app.use('/users',router)  //将路由注册到/user的路径下
-
-        
-
-var port = process.env.PORT || 3000;
+var port = process.env.PORT || 3300;
 app.listen(port);
-console.log('listen on port:' + port);
