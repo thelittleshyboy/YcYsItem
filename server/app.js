@@ -8,8 +8,11 @@ var router = require('./router/users');
 const url = "mongodb://localhost:27017/ycyweb"
 
 mongoose.connect(url,{useNewUrlParser:true},(err)=>{
-    if(err)console.log(err);
-    console.log('db connect success');
+    if(err){
+      console.log(err)
+    } else {
+      console.log('db connect success');
+    }
 })
 
 app.use(bodyParser.json())
@@ -24,12 +27,12 @@ app.all('*', function(req, res, next) {
 
 app.use(session({
     name : 'userName',
-    secret :  'lsq', // 对session id 相关的cookie 进行签名
+    secret :  'yyc', // 对session id 相关的cookie 进行签名
     store: new FileStore(),// 本地存储session（文本文件，也可以选择其他store，比如redis的）
     resave : false,// 强制session保存到session store中
     saveUninitialized: false, // 是否保存未初始化的会话
     cookie : {
-        maxAge : 1000 * 60 * 30, // 设置 session 的有效时间，单位 毫秒
+        maxAge : 1000 * 60 * 10, // 设置 session 的有效时间，单位 毫秒
     },
 }));
 

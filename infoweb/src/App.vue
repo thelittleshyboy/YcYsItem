@@ -12,6 +12,13 @@
         <span v-else style="margin-left:60px">
           欢迎您：
           <div style="color:#ffd04b;text-align:center">
+            <div class="demo-image__preview">
+              <el-image
+                style="width: 70px; height: 70px;border-radius: 50px;margin-top:20px;"
+                :src="url"
+                :preview-src-list="srcList"
+              ></el-image>
+            </div>
             {{user}},
             <span class="logout" @click="Logout">退出</span>
           </div>
@@ -93,6 +100,7 @@
             v-model="loginForm.passWord"
             auto-complete="off"
             style="width:300px"
+            @keyup.enter.native="commitLogForm"
           ></el-input>
         </el-form-item>
       </el-form>
@@ -149,12 +157,16 @@
 </template>
 
 <script>
-import { registerUser } from './api/api'
+import { registerUser } from './api/user'
 
 export default {
   name: 'App',
   data() {
     return {
+      url: 'https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg',
+      srcList: [
+        'https://fuss10.elemecdn.com/8/27/f01c15bb73e1ef3793e64e6b7bbccjpeg.jpeg'
+      ],
       input: null,
       activeName: 'login',
       registerVisible: false,
@@ -203,9 +215,14 @@ export default {
         return;
       }
       registerUser(this.registerForm).then(res => {
-        console.log(res)
+        if (res.data.data === '该用户已存在！') {
+          this.$message.error(res.data.data)
+          return
+        }
+        this.$message.success(res.data.data)
+        this.registerVisible = false
       }).catch((error) => {
-        console.log(error)
+        this.$message.error('创建失败！')
       })
     },
     submitForm() {
@@ -221,14 +238,14 @@ export default {
           passWord: this.loginForm.passWord
         };
         this.$store.dispatch('Login', params).then(() => {
-          this.$message.success('登录成功')
+          this.$message.success('登录成功！')
           this.dialogVisible = false
           setTimeout(() => {
             location.reload()
           }, 500)
         })
           .catch((error) => {
-            console.log(error)
+            this.$message.error('用户不存在或密码错误！')
           })
       } else {
         this.$message.error('请输入用户名或密码')
@@ -264,5 +281,8 @@ export default {
 .logout {
   cursor: pointer;
   font-size: 12px;
+}
+.el-main {
+  padding: 0;
 }
 </style>

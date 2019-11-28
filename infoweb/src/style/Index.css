@@ -27,9 +27,10 @@ html,body,#app,.el-container{
   
   .el-main {
     margin-left: 180px;
+    padding: 0px;
     color: #333;
     text-align: center;
-    line-height: 40px;
+    line-height: 20px;
   }
   
   body > .el-container {

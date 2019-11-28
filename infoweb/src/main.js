@@ -6,13 +6,9 @@ import router from './router'
 import '@/style/index.css'
 import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
-import * as api from './api/api.js'
 import store from './store/store.js'
 
 Vue.use(ElementUI)
-Object.keys(api).forEach(key => {
-  Vue.filter(key, api[key])
-})
 Vue.config.productionTip = false
 
 /* eslint-disable no-new */

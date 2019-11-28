@@ -1,6 +1,6 @@
 import axios from 'axios'
 import qs from 'qs'
-// import { Message } from 'element-ui'
+import { Message } from 'element-ui'
 // import store from '@/store'
 // import router from '@/router'
 
@@ -39,8 +39,14 @@ service.interceptors.response.use(
    * You can also judge the status by HTTP Status Code
    */
   response => {
-    const res = response
-    return res
+    if(response.status !== 200) {
+      Message.error('系统发生错误，请重试！')
+      return
+    } else if (response.data.status === 'failed') {
+      Message.error(response.data.data)
+      return
+    }
+    return response
   },
   error => {
     return Promise.reject(error)

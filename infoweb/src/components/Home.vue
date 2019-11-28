@@ -8,15 +8,16 @@
     <h2>精选推荐</h2>
     <el-divider></el-divider>
     <div class="card-list-outside">
-      <div class="card-list" v-for="(o, index) in 5" :key="index">
+      <div class="card-list" v-for="(item, index) in allList" :key="index">
         <el-card class="card-style">
           <img
             src="https://shadow.elemecdn.com/app/element/hamburger.9cf7b091-55e9-11e9-a976-7f4d0b07eef6.png"
             class="image"
           />
-          <div>
-            <span>好吃的汉堡</span>
-            <el-button type="text" class="button">详情</el-button>
+          <div class="card-content">
+            <h3>{{ item.title }}</h3>
+            <h5>#{{ item.region }}#</h5>
+            <div>{{ item.desc }}</div>
           </div>
         </el-card>
       </div>
@@ -25,10 +26,13 @@
 </template>
 
 <script>
+import { getAllList } from '../api/article'
+
 export default {
   name: 'HelloWorld',
   data() {
     return {
+      allList: [],
       input: '',
       imgList: [{
         id: '1',
@@ -41,7 +45,16 @@ export default {
         idView: require('../assets/carouselImg3.jpg')
       }]
     }
-  }
+  },
+  mounted() {
+    getAllList().then(res => {
+      if (res.data.status === 'success') {
+        this.allList = res.data.data
+      }
+    }),err => {
+      console.log(err)
+    }
+  },
 }
 </script>
 
@@ -84,6 +97,7 @@ export default {
 }
 
 .card-list-outside {
+  margin-left: 30px;
   width: 100%;
   display: flex;
   flex-direction: row;
@@ -93,11 +107,16 @@ export default {
 .card-list {
   margin-top: 10px;
   margin-left: 10px;
-  width: 350px;
+  width: 320px;
 }
 
 .card-style {
   width: 300px;
   height: 400px;
+  line-height: 20px;
+  cursor: pointer;
+}
+.card-content {
+  height:300px
 }
 </style>
