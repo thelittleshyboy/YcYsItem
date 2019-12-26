@@ -67,9 +67,28 @@
         <el-header height="80px">
           Header
           <div class="search-input">
-            <el-input placeholder="请输入搜索内容" v-model="input">
-              <el-button slot="append" icon="el-icon-search"></el-button>
-            </el-input>
+            <el-select
+              v-model="searchValue"
+              filterable
+              remote
+              reserve-keyword
+              placeholder="请输入文章标题搜索"
+              :remote-method="remoteMethod"
+              clearable
+              :loading="remoteLoading"
+              @change="searchArticle"
+              style="width:400px"
+            >
+              <el-option
+                v-for="(item, index) in searchOptions"
+                :key="index"
+                :label="item"
+                :value="item"
+              ></el-option>
+            </el-select>
+            <!-- <el-input placeholder="请输入文章标题搜索" v-model="searchValue">
+              <el-button slot="append" icon="el-icon-search" @click="searchArticle"></el-button>
+            </el-input> -->
           </div>
         </el-header>
         <el-main>
@@ -158,16 +177,19 @@
 
 <script>
 import { registerUser } from './api/user'
+import { remoteSearch } from './api/article'
 
 export default {
   name: 'App',
   data() {
     return {
+      remoteLoading: false,
       url: 'https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg',
       srcList: [
         'https://fuss10.elemecdn.com/8/27/f01c15bb73e1ef3793e64e6b7bbccjpeg.jpeg'
       ],
-      input: null,
+      searchOptions: [],
+      searchValue: null,
       activeName: 'login',
       registerVisible: false,
       dialogVisible: false,
@@ -185,9 +207,9 @@ export default {
     }
   },
   mounted() {
+    this.searchOptions = []
   },
   watch: {
-
   },
   computed: {
     user() {
@@ -205,6 +227,7 @@ export default {
           this.$message.success('已退出登录')
         })
           .catch((error) => {
+            this.$message.error('系统发生异常！')
             console.log(error)
           })
       }
@@ -230,6 +253,21 @@ export default {
     },
     handleClick() {
 
+    },
+    searchArticle() {
+      this.$store.dispatch('search', this.searchValue)
+    },
+    remoteMethod(query) {
+      this.remoteLoading = true
+      remoteSearch({ query: query.trim()}).then(res => {
+        if (res.data.status === "success") {
+          this.searchOptions = res.data.data
+          this.remoteLoading = false
+        }
+      }).catch((error) => {
+        this.$message.error('失败！')
+        this.remoteLoading = false
+      })
     },
     commitLogForm() {
       if (this.loginForm.userName && this.loginForm.passWord) {

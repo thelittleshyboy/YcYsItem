@@ -13,7 +13,16 @@ const router = new Router({
     {
       path: '/',
       redirect: '/home'
-    }, 
+    },
+    {
+      path: '/details/:id',
+      name: 'DetailsArticle',
+      component: () => import('@/components/DetailsArticle'),
+      meta: {
+        title: '详情页',
+        keepAlive: true
+      }
+    },
     {
       path: '/home',
       name: 'Home',

@@ -5,6 +5,7 @@ var userSchema = new mongoose.Schema({
     passWord : String,
     design: String,
     sex: String,
+    sign: String,
     // headImg:
 })
 

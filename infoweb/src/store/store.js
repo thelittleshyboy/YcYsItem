@@ -8,7 +8,8 @@ const store = new Vuex.Store({
   state: {
     status: '',
     // token: localStorage.getItem('token') || '',
-    user: {}
+    user: {},
+    searchCode: null
   },
   mutations: {
     auth_request(state) {
@@ -30,8 +31,14 @@ const store = new Vuex.Store({
       state.status = '';
       //   state.token = '';
     },
+    search(state, searchValue) {
+      state.searchCode = searchValue
+    }
   },
   actions: {
+    search({ commit }, searchValue) {
+      commit('search', searchValue)
+    },
     Login({ commit }, user) {
       return new Promise((resolve, reject) => {
         const { userName, passWord } = user

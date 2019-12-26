@@ -5,33 +5,40 @@
         <img :src="item.idView" style="width:841.5px;height:300px" />
       </el-carousel-item>
     </el-carousel>
-    <h2>精选推荐</h2>
+    <h2>
+      <span v-if="searchValue">搜索结果</span>
+      <span v-if="!searchValue">精选推荐</span>
+    </h2>
     <el-divider></el-divider>
     <div class="card-list-outside">
       <div class="card-list" v-for="(item, index) in allList" :key="index">
-        <el-card class="card-style">
-          <img
-            src="https://shadow.elemecdn.com/app/element/hamburger.9cf7b091-55e9-11e9-a976-7f4d0b07eef6.png"
-            class="image"
-          />
-          <div class="card-content">
-            <h3>{{ item.title }}</h3>
-            <h5>#{{ item.region }}#</h5>
-            <div>{{ item.desc }}</div>
-          </div>
-        </el-card>
+        <router-link :to="{name:'DetailsArticle',params:{id:item._id}}">
+          <el-card class="card-style">
+            <img
+              src="https://shadow.elemecdn.com/app/element/hamburger.9cf7b091-55e9-11e9-a976-7f4d0b07eef6.png"
+              class="image"
+            />
+            <div class="card-content">
+              <h3>{{ item.title | ellipsis(10) }}</h3>
+              <h5>#{{ item.region }}#</h5>
+              <div>{{ item.desc | ellipsis(46) }}</div>
+            </div>
+          </el-card>
+        </router-link>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import { getAllList } from '../api/article'
+import { getAllList, articleDetails } from '../api/article'
+import DetailsArticle from './DetailsArticle.vue'
 
 export default {
   name: 'HelloWorld',
   data() {
     return {
+      detailForm: null,
       allList: [],
       input: '',
       imgList: [{
@@ -47,14 +54,29 @@ export default {
     }
   },
   mounted() {
-    getAllList().then(res => {
-      if (res.data.status === 'success') {
-        this.allList = res.data.data
-      }
-    }),err => {
-      console.log(err)
+    this.getAllList()
+  },
+  computed: {
+    searchValue() {
+      return this.$store.state.searchCode
     }
   },
+  watch: {
+    searchValue() {
+      this.getAllList()
+    }
+  },
+  methods: {
+    getAllList() {
+      getAllList({ searchValue: this.searchValue }).then(res => {
+        if (res.data.status === 'success') {
+          this.allList = res.data.data
+        }
+      }), err => {
+        console.log(err)
+      }
+    }
+  }
 }
 </script>
 
@@ -117,6 +139,6 @@ export default {
   cursor: pointer;
 }
 .card-content {
-  height:300px
+  height: 300px;
 }
 </style>

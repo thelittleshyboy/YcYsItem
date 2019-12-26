@@ -72,17 +72,32 @@ router.route("/register").post((req, res) => {
      }
 });
 // 首页数据
-router.route("/all-article").get((req, res) => {
-     Blog.find({}, (err, blog) => {
-          if (err) {
-               console.log(err);
-          }
-          console.log(blog)
-          res.send({
-               status: 'success',
-               data: blog
-          });
-     })
+router.route("/all-article").post((req, res) => {
+     console.log(req.body.searchValue)
+     if (req.body.searchValue) {
+          var qs=new RegExp(req.body.searchValue);
+          Blog.find({title: qs}, (err, blog) => {
+               if (err) {
+                    console.log(err);
+               }
+               console.log(blog)
+               res.send({
+                    status: 'success',
+                    data: blog
+               });
+          })
+     } else {
+          Blog.find({}, (err, blog) => {
+               if (err) {
+                    console.log(err);
+               }
+               console.log(blog)
+               res.send({
+                    status: 'success',
+                    data: blog
+               });
+          })
+     }
           // .sort({
           //      _id: -1
           // })
@@ -90,9 +105,24 @@ router.route("/all-article").get((req, res) => {
           // .skip((page - 1) * 3);
 });
 
+router.route("/remote-search").post((req, res) => {
+     console.log(req.body.query)
+     if (req.body.query) {
+          var remoteqs=new RegExp(req.body.query);
+          Blog.find({title: remoteqs}, (err, blog) => {
+               if (err) {
+                    console.log(err);
+               }
+               res.send({
+                    status: 'success',
+                    data: blog.map(el => el ? el.title : el)
+               });
+          })
+     }
+});
+
 // 个人数据
 router.route("/my-article").post((req, res) => {
-     console.log(req.body)
      Blog.find({Auid:req.body.userName}, (err, blog) => {
           if (err) {
                console.log(err);
@@ -102,6 +132,39 @@ router.route("/my-article").post((req, res) => {
                status: 'success',
                data: blog
           });
+     })
+})
+
+//删除信息
+router.route("/delete-article").post((req, res) => {
+     Blog.deleteOne({ _id:req.body.id }, (err, blog) => {
+          if (err) {
+               res.send({
+                    status: 'failed'
+               });
+          }
+          res.send({
+               status: 'success'
+          });
+     })
+})
+
+//编辑信息
+router.route("/edit-article").post((req, res) => {
+     Blog.updateOne({ _id:req.body._id }, {$set: {
+           title : req.body.title,
+           region: req.body.region,
+           desc: req.body.desc
+          }}, (err, blog) => {
+          if (err) {
+               res.send({
+                    status: 'failed'
+               });
+          } else {
+               res.send({
+                    status: 'success'
+               });
+          }
      })
 })
 // // 文章列表
@@ -252,43 +315,21 @@ router.route("/issue").post((req, res) => {
 
 // });
 
-// //动态路由寻找详情页面
-// router.route("/ContentInfo/:id").get((req, res) => {
-//      // console.log(req.params.id);
-
-//      Blog.findOne(
-//           {
-//                _id: req.params.id
-//           },
-//           (err, blog) => {
-//                if (err) {
-//                     console.log(err);
-//                } else {
-//                     console.log(blog);
-//                }
-
-//                Comt.find(
-//                     {
-//                          article_id: req.params.id
-//                     },
-//                     (err, comt) => {
-//                          if (err) {
-//                               console.log(err);
-//                          } else {
-//                               console.log(comt);
-//                          }
-
-//                          var temp = {
-//                               blog: blog,
-//                               comt: comt
-//                          };
-
-//                          res.json(temp);
-//                     }
-//                );
-//           }
-//      );
-// });
+//详情页面
+router.route("/details-article").post((req, res) => {
+     console.log(req.body);
+     Blog.findOne({ _id: req.body.id},(err, blog) => {
+          if (err) {
+               res.send({
+                    status: 'failed'
+               });
+          }
+          res.send({
+               status: 'success',
+               data: blog
+          });
+     })
+})
 
 // //存储评论数据
 // router.route("/ContentInfo/Submit/:id").post((req, res) => {

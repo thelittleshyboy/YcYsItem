@@ -7,8 +7,12 @@ import '@/style/index.css'
 import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
 import store from './store/store.js'
+import * as filters from './filters/index' // global filters
 
 Vue.use(ElementUI)
+Object.keys(filters).forEach(key => {
+  Vue.filter(key, filters[key])
+})
 Vue.config.productionTip = false
 
 /* eslint-disable no-new */
