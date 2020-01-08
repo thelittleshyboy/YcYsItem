@@ -8,7 +8,7 @@
           :preview-src-list="srcList"
         ></el-image>
       </div>
-      <h3>{{user}}</h3>
+      <h3>{{ user }}</h3>
       <div>
         <i
           class="el-icon-edit"
@@ -28,7 +28,34 @@
         </span>
       </div>
       <el-tabs type="border-card" v-model="activeName" @tab-click="getList">
-        <el-tab-pane label="个人资料" name="personalInfo">个人资料</el-tab-pane>
+        <el-tab-pane label="个人资料" name="personalInfo">
+          <el-form ref="infoForm" :model="infoForm" label-width="80px" v-loading="infoLoading">
+            <el-form-item label="用户名">
+              <div style="float:left">{{ user }}</div>
+            </el-form-item>
+            <el-form-item label="修改密码">
+              <el-input v-model="userForm.password"></el-input>
+            </el-form-item>
+            <el-form-item label="上传头像">
+              <el-upload
+                action="https://jsonplaceholder.typicode.com/posts/"
+                list-type="picture-card"
+                :on-preview="handlePictureCardPreview"
+                :on-remove="handleRemove"
+                style="float:left"
+              >
+                <i class="el-icon-plus"></i>
+              </el-upload>
+              <el-dialog :visible.sync="dialogVisible" size="tiny">
+                <img width="100%" alt />
+              </el-dialog>
+            </el-form-item>
+            <el-form-item>
+              <el-button type="primary" @click="onSubmit" v-show="!ifEdit">确 定</el-button>
+              <el-button @click="init">重 置</el-button>
+            </el-form-item>
+          </el-form>
+        </el-tab-pane>
         <el-tab-pane label="发布信息" name="sendInfo">
           <el-form ref="infoForm" :model="infoForm" label-width="80px" v-loading="infoLoading">
             <el-form-item label="信息名称">
@@ -75,48 +102,43 @@
                   </div>
                 </el-col>
               </router-link>
-                <el-col :span="18">
-                  <el-row>
-                    <el-col :span="14">
-                      <h2
-                        style="float:left;margin-left:25px;color:black"
-                      >{{ item ? item.title : '' | ellipsis(20) }}</h2>
-                    </el-col>
-                    <el-col :span="10">
-                      <el-row style="margin-top:10px;float:right;margin-right:20px">
-                        <el-button
-                          type="primary"
-                          icon="el-icon-edit"
-                          circle
-                          @click="backForm(item)"
-                        ></el-button>
-                        <el-button type="warning" icon="el-icon-star-off" circle></el-button>
-                        <el-button
-                          type="danger"
-                          icon="el-icon-delete"
-                          circle
-                          @click="del(item, index)"
-                        ></el-button>
-                      </el-row>
-                    </el-col>
-                  </el-row>
-                  <el-row>
-                    <el-col
-                      :span="23"
-                      style="overflow:hidden;margin-left:25px;color:black"
-                    >{{ item ? item.desc : '' | ellipsis(300) }}</el-col>
-                  </el-row>
-                  <el-row>
-                    <el-rate
-                      v-model="rate"
-                      disabled
-                      show-score
-                      text-color="#ff9900"
-                      score-template="{value}"
-                      style="float:right;margin-right:25px;margin-top:10px"
-                    ></el-rate>
-                  </el-row>
-                </el-col>
+              <el-col :span="18">
+                <el-row>
+                  <el-col :span="14">
+                    <h2
+                      style="float:left;margin-left:25px;color:black"
+                    >{{ item ? item.title : '' | ellipsis(20) }}</h2>
+                  </el-col>
+                  <el-col :span="10">
+                    <el-row style="margin-top:10px;float:right;margin-right:20px">
+                      <el-button type="primary" icon="el-icon-edit" circle @click="backForm(item)"></el-button>
+                      <el-button type="warning" icon="el-icon-star-off" circle></el-button>
+                      <el-button
+                        type="danger"
+                        icon="el-icon-delete"
+                        circle
+                        @click="del(item, index)"
+                      ></el-button>
+                    </el-row>
+                  </el-col>
+                </el-row>
+                <el-row>
+                  <el-col
+                    :span="23"
+                    style="overflow:hidden;margin-left:25px;color:black"
+                  >{{ item ? item.desc : '' | ellipsis(300) }}</el-col>
+                </el-row>
+                <el-row>
+                  <el-rate
+                    v-model="rate"
+                    disabled
+                    show-score
+                    text-color="#ff9900"
+                    score-template="{value}"
+                    style="float:right;margin-right:25px;margin-top:10px"
+                  ></el-rate>
+                </el-row>
+              </el-col>
             </el-row>
           </div>
         </el-tab-pane>
@@ -136,6 +158,7 @@ export default {
   },
   data() {
     return {
+      dialogVisible: false,
       signInput: null,
       signShow: true,
       sign: '签名是一种态度，我想我可以更酷！',
@@ -154,6 +177,9 @@ export default {
         desc: '',
         userName: null
       },
+      userForm: {
+        password: '',
+      },
       myList: []
     }
   },
@@ -165,6 +191,10 @@ export default {
         desc: ''
       }
     },
+    handlePictureCardPreview() {
+      this.dialogVisible = true
+    },
+    handleRemove() {},
     showInput() {
       this.signShow = false
       this.signInput = this.sign
@@ -176,7 +206,7 @@ export default {
     onSubmit() {
       this.infoLoading = true
       if (localStorage.getItem('user')) {
-        this.infoForm.userName = localStorage.getItem('user')
+        this.infoForm.userName = JSON.parse(localStorage.getItem('user')).userName
       }
       if (!this.infoForm.title || !this.infoForm.region || !this.infoForm.desc || !this.infoForm.userName) {
         this.$message.error('发布失败')
@@ -195,8 +225,8 @@ export default {
       }
     },
     getList(tab) {
-      if (localStorage.getItem('user') && tab.index === '2') {
-        getAuList({ userName: localStorage.getItem('user') }).then(res => {
+      if (localStorage.getItem('user').userName && tab.index === '2') {
+        getAuList({ userName: JSON.parse(localStorage.getItem('user')).userName }).then(res => {
           if (res.data.status === 'success') {
             this.myList = res.data.data
           }
@@ -207,7 +237,7 @@ export default {
     del(item, index) {
       deleteArticle({ id: item._id }).then(res => {
         if (res.data.status === 'success') {
-          getAuList({ userName: localStorage.getItem('user') }).then(res => {
+          getAuList({ userName: JSON.parse(localStorage.getItem('user')).userName }).then(res => {
             if (res.data.status === 'success') {
               this.myList = res.data.data
               this.$message.success('删除成功')
@@ -238,7 +268,7 @@ export default {
   },
   computed: {
     user() {
-      return localStorage.getItem('user') ? localStorage.getItem('user') : null
+      return localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user')).userName : null
     }
   }
 }

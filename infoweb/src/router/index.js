@@ -12,7 +12,7 @@ const router = new Router({
   routes: [
     {
       path: '/',
-      redirect: '/home'
+      redirect: '/mine'
     },
     {
       path: '/details/:id',
@@ -43,10 +43,13 @@ const router = new Router({
       }
     },
     {
-      path: '/manage',
-      name: 'Manage',
-      component: () => import('@/components/Manage'),
-      meta: { title: '管理' }
+      path: '/manage/usermanage',
+      name: 'UserManage',
+      component: () => import('@/components/Manage/UserManage'),
+      meta: { 
+        title: '用户管理',
+        needLogin: true
+      }
     },
     {
       path: '/classify',
@@ -71,10 +74,10 @@ router.beforeEach((to, from, next) => {
       next()
     }
     else {
+      next('/home')
       Message.error('请登录后再操作');
     }
-  }
-  else {
+  } else {
     next()
   }
 })

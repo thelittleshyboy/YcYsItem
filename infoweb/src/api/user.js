@@ -23,3 +23,11 @@ export function registerUser(data) {
     data
   })
 }
+
+export function allUser(data) {
+  return request({
+    url: '/user/all-user',
+    method: 'post',
+    data
+  })
+}

@@ -19,10 +19,16 @@
           <el-col :span="5"><span style="display: inline">评分：<el-rate v-model="rate" show-text @change="confirmRate"></el-rate></span></el-col>
           <el-col :span="4">
             <el-row style="float:right;padding-right:20px">
-              <el-button type="primary" icon="el-icon-edit" circle @click="confirmRate"></el-button>
+              <el-tooltip class="item" effect="dark" content="点赞" placement="top-start">
+                <el-button type="primary" icon="el-icon-edit" circle @click="confirmRate"></el-button>
+              </el-tooltip>
               <!-- <el-button type="warning" icon="el-icon-star-on" circle></el-button> -->
-              <el-button type="warning" icon="el-icon-star-off" circle @click="confirmRate"></el-button>
-              <el-button type="danger" icon="el-icon-tickets" circle @click="confirmRate"></el-button>
+              <el-tooltip class="item" effect="dark" content="收藏" placement="top-start">
+                <el-button type="warning" icon="el-icon-star-off" circle @click="confirmRate"></el-button>
+              </el-tooltip>
+              <el-tooltip class="item" effect="dark" content="评论" placement="top-start">
+                <el-button type="danger" icon="el-icon-tickets" circle @click="confirmRate"></el-button>
+              </el-tooltip>
             </el-row>
           </el-col>
         </el-row>
@@ -66,7 +72,7 @@ export default {
       }
     },
     confirmRate(query) {
-      if (localStorage.getItem('user')) {
+      if (JSON.parse(localStorage.getItem('user')).userName) {
         console.log(query)
       } else {
         this.$message.error('请先登录再操作')

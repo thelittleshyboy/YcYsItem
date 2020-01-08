@@ -9,7 +9,8 @@ const store = new Vuex.Store({
     status: '',
     // token: localStorage.getItem('token') || '',
     user: {},
-    searchCode: null
+    searchCode: null,
+    manageButton: false
   },
   mutations: {
     auth_request(state) {
@@ -33,6 +34,9 @@ const store = new Vuex.Store({
     },
     search(state, searchValue) {
       state.searchCode = searchValue
+    },
+    manageBtn(state, status) {
+      state.manageButton = status
     }
   },
   actions: {
@@ -46,13 +50,15 @@ const store = new Vuex.Store({
         loginUser({ userName: userName.trim(), passWord: passWord })
           .then(res => {
             //   const token = resp.data.token
-            localStorage.setItem('user', res.data.data.userName)
+            localStorage.setItem('user',  JSON.stringify(res.data.data))
             //   localStorage.setItem('token', token)
-            // 每次请求接口时，需要在headers添加对应的Token验证
             //   axios.defaults.headers.common['Authorization'] = token
-            // 更新token
             //   commit('auth_success', token, user)
             commit('auth_success', res.data.data)
+            if (res.data.data.jurisdiction === 'admin') {
+              commit('manageBtn', true)
+              localStorage.setItem('manage', true)
+            }
             resolve(res)
           })
           .catch(err => {
@@ -67,6 +73,7 @@ const store = new Vuex.Store({
         logoutUser({ userName: localStorage.getItem('user')})
           .then(response => {
             localStorage.removeItem('user');
+            localStorage.removeItem('manage')
             commit('logout')
             // 移除之前在axios头部设置的token,现在将无法执行需要token的事务
             // delete axios.defaults.headers.common['Authorization'];
