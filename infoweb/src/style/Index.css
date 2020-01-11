@@ -45,3 +45,11 @@ html,body,#app,.el-container{
   .el-container:nth-child(7) .el-aside {
     line-height: 320px;
   }
+
+  .search-form-inline {
+    text-align: left;
+  }
+  .search-form-inline .el-form-item{
+    margin-top: 20px;
+    margin-left: 40px;
+  }

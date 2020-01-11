@@ -68,7 +68,7 @@ export default {
   },
   methods: {
     getAllList() {
-      getAllList({ searchValue: this.searchValue }).then(res => {
+      getAllList({ title: this.searchValue }).then(res => {
         if (res.data.status === 'success') {
           this.allList = res.data.data
         }
@@ -139,6 +139,14 @@ export default {
   cursor: pointer;
 }
 .card-content {
+  text-decoration: none;
   height: 300px;
+}
+a {
+  text-decoration: none;
+}
+ 
+.router-link-active {
+  text-decoration: none;
 }
 </style>

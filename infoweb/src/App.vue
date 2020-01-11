@@ -16,7 +16,6 @@
               <el-image
                 style="width: 70px; height: 70px;border-radius: 50px;margin-top:20px;"
                 :src="url"
-                :preview-src-list="srcList"
               ></el-image>
             </div>
             {{user}},
@@ -61,7 +60,7 @@
                   <span>管理</span>
                 </template>
                 <el-menu-item-group>
-                  <el-menu-item index="1-1">全部</el-menu-item>
+                  <el-menu-item index="/manage/infomanage">信息管理</el-menu-item>
                   <el-menu-item index="/manage/usermanage">用户管理</el-menu-item>
                 </el-menu-item-group>
               </el-submenu>
@@ -71,38 +70,55 @@
       </el-aside>
       <el-container>
         <el-header height="80px">
-          Header
-          <div class="search-input">
-            <el-select
-              v-model="searchValue"
-              filterable
-              remote
-              reserve-keyword
-              placeholder="请输入文章标题搜索"
-              :remote-method="remoteMethod"
-              clearable
-              :loading="remoteLoading"
-              @change="searchArticle"
-              style="width:400px"
-            >
-              <el-option
-                v-for="(item, index) in searchOptions"
-                :key="index"
-                :label="item"
-                :value="item"
-              ></el-option>
-            </el-select>
-            <!-- <el-input placeholder="请输入文章标题搜索" v-model="searchValue">
+          <el-row>
+            <el-col :span="2">
+              <img
+                src=""
+                style="padding-top: 10px;width: 100px;height: 50px"
+              />
+            </el-col>
+            <el-col :span="10">
+              <span class="main-title">有创意信息发布站</span>
+            </el-col>
+            <el-col :span="11">
+              <div class="search-input">
+                <el-select
+                  v-model="searchValue"
+                  filterable
+                  remote
+                  reserve-keyword
+                  placeholder="请输入文章标题搜索"
+                  :remote-method="remoteMethod"
+                  clearable
+                  :loading="remoteLoading"
+                  @change="searchArticle"
+                  style="width:400px"
+                >
+                  <el-option
+                    v-for="(item, index) in searchOptions"
+                    :key="index"
+                    :label="item"
+                    :value="item"
+                  ></el-option>
+                </el-select>
+                <!-- <el-input placeholder="请输入文章标题搜索" v-model="searchValue">
               <el-button slot="append" icon="el-icon-search" @click="searchArticle"></el-button>
-            </el-input> -->
-          </div>
+                </el-input>-->
+              </div>
+            </el-col>
+          </el-row>
         </el-header>
         <el-main>
           <router-view />
         </el-main>
       </el-container>
     </el-container>
-    <el-dialog title="欢迎来到XX" :visible.sync="dialogVisible" width="500px">
+    <el-dialog
+      title="欢迎来到XX"
+      :visible.sync="dialogVisible"
+      width="500px"
+      :close-on-click-modal="false"
+    >
       <el-form
         :model="loginForm"
         status-icon
@@ -139,7 +155,12 @@
         <el-button type="primary" @click="commitLogForm">登录</el-button>
       </span>
     </el-dialog>
-    <el-dialog title="欢迎来到XX" :visible.sync="registerVisible" width="500px">
+    <el-dialog
+      title="欢迎来到XX"
+      :visible.sync="registerVisible"
+      width="500px"
+      :close-on-click-modal="false"
+    >
       <el-form
         :model="registerForm"
         status-icon
@@ -261,15 +282,14 @@ export default {
 
     },
     handleClick() {
-
     },
     searchArticle() {
       this.$store.dispatch('search', this.searchValue)
-      this.$router.push({path:'/'})
+      this.$router.push({ path: '/home' })
     },
     remoteMethod(query) {
       this.remoteLoading = true
-      remoteSearch({ query: query.trim()}).then(res => {
+      remoteSearch({ query: query.trim() }).then(res => {
         if (res.data.status === "success") {
           this.searchOptions = res.data.data
           this.remoteLoading = false
@@ -293,10 +313,8 @@ export default {
           }, 500)
         })
           .catch((error) => {
-            this.$message.error('用户不存在或密码错误！')
           })
       } else {
-        this.$message.error('请输入用户名或密码')
       }
     }
   }
@@ -332,5 +350,8 @@ export default {
 }
 .el-main {
   padding: 0;
+}
+.main-title {
+  font-family: "Comic Sans MS", cursive, sans-serif
 }
 </style>

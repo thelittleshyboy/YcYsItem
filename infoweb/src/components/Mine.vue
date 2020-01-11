@@ -142,7 +142,9 @@
             </el-row>
           </div>
         </el-tab-pane>
-        <el-tab-pane label="定时任务补偿">定时任务补偿</el-tab-pane>
+        <el-tab-pane label="定时任务补偿">
+          定时任务补偿
+        </el-tab-pane>
       </el-tabs>
     </div>
   </div>
@@ -225,7 +227,7 @@ export default {
       }
     },
     getList(tab) {
-      if (localStorage.getItem('user').userName && tab.index === '2') {
+      if (JSON.parse(localStorage.getItem('user')).userName && tab.index === '2') {
         getAuList({ userName: JSON.parse(localStorage.getItem('user')).userName }).then(res => {
           if (res.data.status === 'success') {
             this.myList = res.data.data

@@ -19,11 +19,21 @@ router.route("/login").post((req, res) => {
                     status: 'failed',
                     data: '查询用户错误！'
                })
-          } else {
+          } else if (user && user.status) {
                req.session.user = user
                res.send({
                     status: 'success',
                     data: user
+               })
+          } else if (user && !user.status) {
+               res.send({
+                    status: 'failed',
+                    data: '该账号已被封停'
+               })
+          } else if (!user) {
+               res.send({
+                    status: 'failed',
+                    data: '用户不存在或账号密码错误'
                })
           }
      }
@@ -53,6 +63,8 @@ router.route("/register").post((req, res) => {
                               userName: req.body.userName,
                               passWord: truePassword,
                               time: time,
+                              jurisdiction: 'user',
+                              status: true
                          });
                          users.save((err, res) => {
                               if (err) console.log(err);
@@ -71,45 +83,62 @@ router.route("/register").post((req, res) => {
           })
      }
 });
+
+router.route("/all-user").post((req, res) => {
+     let userObject = req.body
+     for (var key in userObject) {
+          if (!userObject[key]) {
+               delete userObject[key]
+          } else {
+               userObject[i] = new RegExp(userObject[i])
+          }
+     }
+     User.find(userObject, (err, blog) => {
+          if (err) {
+               console.log(err);
+          }
+          res.send({
+               status: 'success',
+               data: blog
+          });
+     })
+     // .sort({
+     //      _id: -1
+     // })
+     // .limit(3)
+     // .skip((page - 1) * 3);
+});
+
 // 首页数据
 router.route("/all-article").post((req, res) => {
-     console.log(req.body.searchValue)
-     if (req.body.searchValue) {
-          var qs=new RegExp(req.body.searchValue);
-          Blog.find({title: qs}, (err, blog) => {
-               if (err) {
-                    console.log(err);
-               }
-               console.log(blog)
-               res.send({
-                    status: 'success',
-                    data: blog
-               });
-          })
-     } else {
-          Blog.find({}, (err, blog) => {
-               if (err) {
-                    console.log(err);
-               }
-               console.log(blog)
-               res.send({
-                    status: 'success',
-                    data: blog
-               });
-          })
+     let infoObject = req.body
+     for (var i in infoObject) {
+          if (!infoObject[i]) {
+               delete infoObject[i]
+          } else {
+               infoObject[i] = new RegExp(infoObject[i])
+          }
      }
-          // .sort({
-          //      _id: -1
-          // })
-          // .limit(3)
-          // .skip((page - 1) * 3);
+     Blog.find(infoObject, (err, blog) => {
+          if (err) {
+               console.log(err);
+          }
+          res.send({
+               status: 'success',
+               data: blog
+          });
+     })
+     // .sort({
+     //      _id: -1
+     // })
+     // .limit(3)
+     // .skip((page - 1) * 3);
 });
 
 router.route("/remote-search").post((req, res) => {
-     console.log(req.body.query)
      if (req.body.query) {
-          var remoteqs=new RegExp(req.body.query);
-          Blog.find({title: remoteqs}, (err, blog) => {
+          var remoteqs = new RegExp(req.body.query);
+          Blog.find({ title: remoteqs }, (err, blog) => {
                if (err) {
                     console.log(err);
                }
@@ -123,7 +152,7 @@ router.route("/remote-search").post((req, res) => {
 
 // 个人数据
 router.route("/my-article").post((req, res) => {
-     Blog.find({Auid:req.body.userName}, (err, blog) => {
+     Blog.find({ Auid: req.body.userName }, (err, blog) => {
           if (err) {
                console.log(err);
           }
@@ -137,7 +166,7 @@ router.route("/my-article").post((req, res) => {
 
 //删除信息
 router.route("/delete-article").post((req, res) => {
-     Blog.deleteOne({ _id:req.body.id }, (err, blog) => {
+     Blog.deleteOne({ _id: req.body.id }, (err, blog) => {
           if (err) {
                res.send({
                     status: 'failed'
@@ -151,11 +180,13 @@ router.route("/delete-article").post((req, res) => {
 
 //编辑信息
 router.route("/edit-article").post((req, res) => {
-     Blog.updateOne({ _id:req.body._id }, {$set: {
-           title : req.body.title,
-           region: req.body.region,
-           desc: req.body.desc
-          }}, (err, blog) => {
+     Blog.updateOne({ _id: req.body._id }, {
+          $set: {
+               title: req.body.title,
+               region: req.body.region,
+               desc: req.body.desc
+          }
+     }, (err, blog) => {
           if (err) {
                res.send({
                     status: 'failed'
@@ -209,75 +240,7 @@ router.route("/issue").post((req, res) => {
                status: 'success'
           })
      });
-     // Blog.find({}, (err, blog) => {
-     //      if (err) {
-     //           console.log(err);
-     //      }
-     //      console.log(blog);
-     //      res.json(blog ? blog : {});
-     //      var times = new Date();
-     //      var time =
-     //           times.getFullYear() +
-     //           "-" +
-     //           (times.getMonth() + 1) +
-     //           "-" +
-     //           times.getDate() +
-     //           " " +
-     //           times.getHours() +
-     //           ":" +
-     //           times.getMinutes() +
-     //           ":" +
-     //           times.getSeconds();
-
-     //      if (req.body.title == "" || req.body.content == "" || req.body.tag == "") {
-     //           return false;
-     //      } else {
-
-     //           //     存储数据
-               
-     //           res.end();
-     //      }
-     // });
 });
-
-
-// router.route('/Nav').post((req, res) => {
-
-//      Blog.find({ "title": req.body.msg }, (err, blog) => {
-//           if (err) { console.log(err); }
-//           console.log(req.body.msg)
-//           console.log(blog)
-//           res.json(blog ? blog : {});
-
-//      })
-
-
-// })
-
-// //电影筛选页面
-// router.route('/Movie').post((req, res) => {
-//      if (req.body.my == "其他") {
-//           Blog.find({}, (err, blog) => {
-//                if (err) { console.log(err); }
-//                console.log(req.body.my)
-//                console.log(blog)
-//                res.json(blog ? blog : {});
-
-
-//           })
-//      } else {
-//           Blog.find({ "title": req.body.my }, (err, blog) => {
-//                if (err) { console.log(err); }
-//                console.log(req.body.my)
-//                console.log(blog)
-//                res.json(blog ? blog : {});
-
-
-//           })
-//      }
-
-// })
-
 
 // //点赞
 // router.route("/bonus").post((req, res) => {
@@ -317,8 +280,7 @@ router.route("/issue").post((req, res) => {
 
 //详情页面
 router.route("/details-article").post((req, res) => {
-     console.log(req.body);
-     Blog.findOne({ _id: req.body.id},(err, blog) => {
+     Blog.findOne({ _id: req.body.id }, (err, blog) => {
           if (err) {
                res.send({
                     status: 'failed'
@@ -327,6 +289,39 @@ router.route("/details-article").post((req, res) => {
           res.send({
                status: 'success',
                data: blog
+          });
+     })
+})
+
+router.route("/user-manage").post((req, res) => {
+     User.updateOne({ _id: req.body._id }, {
+          $set: {
+               userName: req.body.userName,
+               jurisdiction: req.body.jurisdiction,
+               status: req.body.status
+          }
+     }, (err, blog) => {
+          if (err) {
+               res.send({
+                    status: 'failed'
+               });
+          } else {
+               res.send({
+                    status: 'success'
+               });
+          }
+     })
+})
+
+router.route("/user-delete").post((req, res) => {
+     User.deleteOne({ _id: req.body.userId }, (err, blog) => {
+          if (err) {
+               res.send({
+                    status: 'failed'
+               });
+          }
+          res.send({
+               status: 'success'
           });
      })
 })

@@ -43,6 +43,15 @@ const router = new Router({
       }
     },
     {
+      path: '/manage/infomanage',
+      name: 'InfoManage',
+      component: () => import('@/components/Manage/InfoManage'),
+      meta: { 
+        title: '信息管理',
+        needLogin: true
+      }
+    },
+    {
       path: '/manage/usermanage',
       name: 'UserManage',
       component: () => import('@/components/Manage/UserManage'),
