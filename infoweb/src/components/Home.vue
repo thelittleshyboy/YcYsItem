@@ -27,17 +27,38 @@
         </router-link>
       </div>
     </div>
+    <el-pagination
+      background
+      layout="prev, pager, next, jumper, slot"
+      :total="totalNum"
+      :page-size="pageSize"
+      class="custom-pagination"
+      :current-page="page"
+      @current-change="current_change"
+      style="margin-top: 20px"
+    ></el-pagination>
+    <div class="hot-title">
+      <h2>最新话题</h2>
+      <div v-for="(item, index) in topicNewList" :key="index">
+        <h4 style="color: #333;">#{{ item.topicName }}</h4>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
 import { getAllList, articleDetails } from '../api/article'
 import DetailsArticle from './DetailsArticle.vue'
+import { newTopic } from '../api/topic'
 
 export default {
   name: 'HelloWorld',
   data() {
     return {
+      topicNewList: [],
+      page: 1,
+      totalNum: 0,
+      pageSize: 0,
       detailForm: null,
       allList: [],
       input: '',
@@ -55,6 +76,7 @@ export default {
   },
   mounted() {
     this.getAllList()
+    this.newTopic()
   },
   computed: {
     searchValue() {
@@ -67,10 +89,25 @@ export default {
     }
   },
   methods: {
+    current_change(index) {
+      this.page = index
+      this.getAllList()
+    },
+    newTopic() {
+      newTopic().then(res => {
+        if (res.data.status === 'success') {
+          this.topicNewList = res.data.data
+        }
+      }), err => {
+        console.log(err)
+      }
+    },
     getAllList() {
-      getAllList({ title: this.searchValue }).then(res => {
+      getAllList({ title: this.searchValue, page: this.page }).then(res => {
         if (res.data.status === 'success') {
           this.allList = res.data.data
+          this.totalNum = res.data.total
+          this.pageSize = res.data.pageSize
         }
       }), err => {
         console.log(err)
@@ -88,6 +125,19 @@ export default {
   opacity: 0.75;
   line-height: 200px;
   margin: 0;
+}
+
+.hot-title {
+  width: 12%;
+  height: 500px;
+  position: absolute;
+  top: 600px;
+  right: 3%;
+  background: #f2f2f5;
+  padding: 20px;
+  border-top: 1px solid #fa2f2f;
+  margin-bottom: 20px;
+  text-align: center;
 }
 
 .el-carousel__item:nth-child(2n) {
@@ -120,7 +170,7 @@ export default {
 
 .card-list-outside {
   margin-left: 30px;
-  width: 100%;
+  width: 80%;
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
@@ -145,7 +195,7 @@ export default {
 a {
   text-decoration: none;
 }
- 
+
 .router-link-active {
   text-decoration: none;
 }

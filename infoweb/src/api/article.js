@@ -55,3 +55,27 @@ export function remoteSearch(data) {
         data
     })
 }
+
+export function articleThumb(data) {
+    return request({
+        url: '/user/article-thumb-on',
+        method: 'post',
+        data
+    })
+}
+
+export function comment(data) {
+    return request({
+        url: '/user/comment',
+        method: 'post',
+        data
+    })
+}
+
+export function getComment(data) {
+    return request({
+        url: '/user/get-comment',
+        method: 'post',
+        data
+    })
+}

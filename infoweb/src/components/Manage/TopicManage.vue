@@ -1,37 +1,28 @@
 <template>
   <div id="app">
     <el-form :inline="true" :model="formInline" class="search-form-inline">
-      <el-form-item label="标题">
-        <el-input v-model="formInline.title" placeholder="输入文章标题"></el-input>
-      </el-form-item>
-      <el-form-item label="作者">
-        <el-input v-model="formInline.Auid" placeholder="输入文章作者"></el-input>
+      <el-form-item label="话题">
+        <el-input v-model="formInline.topicName" placeholder="输入话题标题"></el-input>
       </el-form-item>
       <el-form-item>
         <el-button type="primary" @click="onSubmit">查询</el-button>
+        <el-button type="primary" @click="addNew">新增</el-button>
       </el-form-item>
     </el-form>
     <el-table
       v-loading="tableLoading"
-      :data="infoTableData"
+      :data="topicTableData"
       border
       style="width: 95%;margin:0 30px"
     >
       <el-table-column prop="userName" label="创建时间">
         <template slot-scope="scope">{{ scope.row.time | parseTime('{y}-{m}-{d}') }}</template>
       </el-table-column>
-      <el-table-column prop="userName" label="信息名称">
-        <template slot-scope="scope">{{ scope.row.title }}</template>
-      </el-table-column>
-      <el-table-column prop="jurisdiction" label="标签">
-        <template slot-scope="scope">{{ scope.row.region }}</template>
-      </el-table-column>
-      <el-table-column prop="jurisdiction" label="作者">
-        <template slot-scope="scope">{{ scope.row.Auid }}</template>
+      <el-table-column prop="userName" label="话题名称">
+        <template slot-scope="scope">{{ scope.row.topicName }}</template>
       </el-table-column>
       <el-table-column prop="address" label="操作">
         <template slot-scope="scope">
-          <el-button type="primary" size="small" @click="edit(scope.row)">查看</el-button>
           <el-button type="danger" size="small" @click="del(scope.row)">删除</el-button>
         </template>
       </el-table-column>
@@ -46,29 +37,38 @@
       @current-change="current_change"
       style="margin-top: 20px"
     ></el-pagination>
+    <el-dialog title="新增-话题管理" :visible.sync="dialogVisible" width="500px" :close-on-click-modal="false">
+      <el-form label-width="80px" :model="formAlign">
+        <el-form-item label="话题">
+          <el-input v-model="formAlign.topicName"></el-input>
+        </el-form-item>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="dialogVisible = false">取 消</el-button>
+        <el-button type="primary" @click="confirm">确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
 <script>
-import { getAllList, deleteArticle } from '@/api/article'
+import { topicManage, addTopic } from '@/api/topic'
 
 export default {
   name: 'App',
   data() {
     return {
+      dialogVisible: false,
       totalNum: 0,
       page: 1,
       pageSize: 0,
       tableLoading: false,
-      infoTableData: [],
+      topicTableData: [],
       formAlign: {
-        userName: null,
-        jurisdiction: null,
-        status: true,
+        topicName: null,
       },
       formInline: {
-        title: null,
-        Auid: null,
+        topicName: null,
         page: 1
       }
     }
@@ -79,6 +79,9 @@ export default {
   computed: {
   },
   methods: {
+    addNew() {
+      this.dialogVisible = true
+    },
     onSubmit() {
       this.getAllList()
     },
@@ -86,13 +89,26 @@ export default {
       this.formInline.page = index
       this.getAllList()
     },
+    confirm() {
+      addTopic(this.formAlign).then(res => {
+        if (res.data.status === 'success') {
+          this.$message.success('新增成功')
+          this.getAllList()
+          this.dialogVisible = false
+          this.tableLoading = false
+        }
+      }), err => {
+        console.log(err)
+        this.tableLoading = false
+      }
+    },
     getAllList() {
       this.tableLoading = true
-      getAllList(this.formInline).then(res => {
+      topicManage(this.formInline).then(res => {
         if (res.data.status === 'success') {
           this.totalNum = res.data.total
           this.pageSize = res.data.pageSize
-          this.infoTableData = res.data.data
+          this.topicTableData = res.data.data
           this.tableLoading = false
         }
       }), err => {

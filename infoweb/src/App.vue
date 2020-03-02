@@ -62,6 +62,7 @@
                 <el-menu-item-group>
                   <el-menu-item index="/manage/infomanage">信息管理</el-menu-item>
                   <el-menu-item index="/manage/usermanage">用户管理</el-menu-item>
+                  <el-menu-item index="/manage/topicmanage">话题管理</el-menu-item>
                 </el-menu-item-group>
               </el-submenu>
             </el-menu>

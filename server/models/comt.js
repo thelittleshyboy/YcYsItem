@@ -1,11 +1,10 @@
 const  mongoose = require('mongoose')
 
-
-
 var comtSchema=new mongoose.Schema({
    comment:String,
    time:String,
-   article_id:String
+   articleId:String,
+   auid: String
 })
 
 

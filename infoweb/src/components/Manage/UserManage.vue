@@ -45,6 +45,16 @@
         </template>
       </el-table-column>
     </el-table>
+    <el-pagination
+      background
+      layout="prev, pager, next, jumper, slot"
+      :total="totalNum"
+      class="custom-pagination"
+      :current-page="page"
+      :page-size="pageSize"
+      @current-change="current_change"
+      style="margin-top:20px"
+    ></el-pagination>
     <el-dialog title="编辑-用户管理" :visible.sync="dialogVisible" width="500px" :close-on-click-modal="false">
       <el-form label-width="80px" :model="formAlign">
         <el-form-item label="用户名">
@@ -87,6 +97,9 @@ export default {
   name: 'App',
   data() {
     return {
+      pageSize: 0,
+      totalNum: 0,
+      page: 1,
       dialogVisible: false,
       tableLoading: false,
       userTableData: [],
@@ -113,7 +126,8 @@ export default {
       formInline: {
         userName: null,
         jurisdiction: null,
-        status: null
+        status: null,
+        page: 1
       }
     }
   },
@@ -123,6 +137,11 @@ export default {
   computed: {
   },
   methods: {
+    current_change(index) {
+      this.page = index
+      this.formInline.page = index
+      this.allUser()
+    },
     onSubmit() {
       this.allUser()
     },
@@ -131,6 +150,8 @@ export default {
       allUser(this.formInline).then(res => {
         if (res.data.status === 'success') {
           this.userTableData = res.data.data
+          this.totalNum = res.data.total
+          this.pageSize = res.data.pageSize
           this.tableLoading = false
         }
       }), err => {

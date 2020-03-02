@@ -3,6 +3,7 @@ var router = express.Router();
 var User = require("../models/user");
 var Blog = require("../models/blog");
 var Comt = require("../models/comt");
+var Tag = require("../models/tag");
 var crypto = require('crypto');
 // 图片上传
 var multer = require('multer')
@@ -84,34 +85,76 @@ router.route("/register").post((req, res) => {
      }
 });
 
+// 用户新增评论
+router.route("/comment").post((req, res) => {
+     var commentTime = new Date().getTime();
+     var comments = new Comt({
+          comment: req.body.comment,
+          time: commentTime,
+          articleId: req.body.articleId,
+          auid: req.body.auid
+     });
+     comments.save((err) => {
+          if (err) console.log(err);
+     })
+     res.send({
+          status: 'success'
+     });
+});
+
+// 拉取用户评论
+router.route("/get-comment").post((req, res) => {
+     Comt.find({ articleId: req.body.articleId }, (err, comment) => {
+          if (err) {
+               console.log(err);
+          }
+          res.send({
+               status: 'success',
+               data: comment,
+          });
+     })
+});
+
+//用户管理拉取列表
 router.route("/all-user").post((req, res) => {
      let userObject = req.body
+     let userPage = req.body.page
+     let userLength = 0
+     delete userObject.page
      for (var key in userObject) {
           if (!userObject[key]) {
                delete userObject[key]
-          } else {
-               userObject[i] = new RegExp(userObject[i])
+          } else if (userObject[key] && userObject[key] !== 'true' && userObject[key] !== 'false') {
+               userObject[key] = new RegExp(userObject[key])
           }
      }
+     User.find(userObject, (err, user) => {
+          if (err) {
+               console.log(err);
+          }
+          userLength = user.length
+     })
      User.find(userObject, (err, blog) => {
           if (err) {
                console.log(err);
           }
           res.send({
                status: 'success',
-               data: blog
+               data: blog,
+               total: userLength,
+               pageSize: 10
           });
      })
-     // .sort({
-     //      _id: -1
-     // })
-     // .limit(3)
-     // .skip((page - 1) * 3);
+          .limit(10)
+          .skip((userPage - 1) * 10);
 });
 
 // 首页数据
 router.route("/all-article").post((req, res) => {
-     let infoObject = req.body
+     const infoObject = req.body
+     let articleLength = 0
+     let page = req.body.page
+     delete infoObject.page
      for (var i in infoObject) {
           if (!infoObject[i]) {
                delete infoObject[i]
@@ -123,18 +166,130 @@ router.route("/all-article").post((req, res) => {
           if (err) {
                console.log(err);
           }
+          articleLength = blog.length
+     })
+     Blog.find(infoObject, (err, blog) => {
+          if (err) {
+               console.log(err);
+          }
           res.send({
                status: 'success',
-               data: blog
+               data: blog,
+               total: articleLength,
+               pageSize: 8
           });
-     })
-     // .sort({
-     //      _id: -1
-     // })
-     // .limit(3)
-     // .skip((page - 1) * 3);
+     }).sort({ time: -1 }).limit(8)
+          .skip((page - 1) * 8);
 });
 
+// 话题管理新增话题
+router.route("/add-topic").post((req, res) => {
+     if (req.body.topicName) {
+          Tag.find({ topicName: req.body.topicName }, (err, resData) => {
+               if (err) {
+                    res.send({
+                         status: 'failed',
+                         data: '创建话题错误！'
+                    })
+               } else {
+                    if (resData.length === 0) {
+                         var time = new Date().getTime();
+                         var topics = new Tag({
+                              topicName: req.body.topicName,
+                              time: time,
+                         });
+                         topics.save((err, res) => {
+                              if (err) console.log(err);
+                         });
+                         res.send({
+                              status: 'success',
+                              data: '创建成功'
+                         })
+                    } else {
+                         res.send({
+                              status: 'failed',
+                              data: '该话题已存在！'
+                         })
+                    }
+               }
+          })
+     }
+})
+
+// // 修改签名
+// router.route("/change-sign").get((req, res) => {
+//      User.find({ sign: req.body.signInput, id: req.body. }, (err, tag) => {
+//           if (err) {
+//                console.log(err);
+//           }
+//           res.send({
+//                status: 'success',
+//                data: tag
+//           });
+//      }).sort({ time: -1 }).limit(8)
+// });
+
+// 最新话题
+router.route("/new-topic").get((req, res) => {
+     Tag.find({}, (err, tag) => {
+          if (err) {
+               console.log(err);
+          }
+          res.send({
+               status: 'success',
+               data: tag
+          });
+     }).sort({ time: -1 }).limit(8)
+});
+
+// 话题管理远程搜索列表
+router.route("/remote-topic").post((req, res) => {
+     if (req.body.query) {
+          var remoteTopic = new RegExp(req.body.query);
+          Tag.find({ topicName: remoteTopic }, (err, tag) => {
+               if (err) {
+                    console.log(err);
+               }
+               res.send({
+                    status: 'success',
+                    data: tag
+               });
+          })
+     }
+});
+
+// 话题管理拉取列表
+router.route("/topic-manage").post((req, res) => {
+     let topicObject = req.body
+     let topicPage = req.body.page
+     let topicLength = 0
+     delete topicObject.page
+     if (!topicObject.topicName) {
+          topicObject = {}
+     }
+     topicObject.topicName = new RegExp(topicObject.topicName)
+     Tag.find(topicObject, (err, topic) => {
+          if (err) {
+               console.log(err);
+          }
+          topicLength = topic.length
+     })
+     Tag.find(topicObject, (err, blog) => {
+          if (err) {
+               console.log(err);
+          }
+          res.send({
+               status: 'success',
+               data: blog,
+               total: topicLength,
+               pageSize: 10
+          });
+     }).sort({ time: -1 }).limit(10)
+          .skip((topicPage - 1) * 10);
+});
+
+
+// 远程搜索
 router.route("/remote-search").post((req, res) => {
      if (req.body.query) {
           var remoteqs = new RegExp(req.body.query);
@@ -152,16 +307,26 @@ router.route("/remote-search").post((req, res) => {
 
 // 个人数据
 router.route("/my-article").post((req, res) => {
+     let articleLength = 0
+     let myArticlePage = req.body.page
      Blog.find({ Auid: req.body.userName }, (err, blog) => {
           if (err) {
                console.log(err);
           }
-          console.log(blog)
+          articleLength = blog.length
+     })
+     Blog.find({ Auid: req.body.userName }, (err, blog) => {
+          if (err) {
+               console.log(err);
+          }
           res.send({
                status: 'success',
-               data: blog
+               data: blog,
+               total: articleLength,
+               pageSize: 3
           });
-     })
+     }).limit(3)
+          .skip((myArticlePage - 1) * 3);
 })
 
 //删除信息
@@ -178,68 +343,161 @@ router.route("/delete-article").post((req, res) => {
      })
 })
 
-//编辑信息
-router.route("/edit-article").post((req, res) => {
-     Blog.updateOne({ _id: req.body._id }, {
-          $set: {
-               title: req.body.title,
-               region: req.body.region,
-               desc: req.body.desc
-          }
-     }, (err, blog) => {
+// 点赞
+router.route("/article-thumb-on").post((req, res) => {
+     User.findOne({ _id: req.body.userId }, (err, data) => {
           if (err) {
                res.send({
                     status: 'failed'
                });
           } else {
-               res.send({
-                    status: 'success'
-               });
+               let nowArray = [...data.thumbsUp, req.body.id]
+               User.updateOne({ _id: req.body.userId }, {
+                    $set: {
+                         thumbsUp: nowArray
+                    }
+               }, (err, ifThumb) => {
+                    if (err) {
+                         res.send({
+                              status: 'failed'
+                         });
+                    }
+                    res.send({
+                         status: 'success'
+                    });
+               })
           }
      })
 })
-// // 文章列表
-// router.route("/list").get(async (req, res) => {
-//      const { page } = req.query;
-//      try {
-//           const total = await Blog.find().countDocuments();
-//           const lists = await Blog.find({})
-//                .skip((page - 1) * 3)
-//                .limit(3);
-//           res.json({
-//                ok: 1,
-//                data: {
-//                     lists,
-//                     pagination: {
-//                          total,
-//                          page
-//                     }
-//                }
-//           });
-//      } catch (error) {
-//           console.log(error);
-//      }
-// });
+
+//编辑信息
+router.route("/edit-article").post((req, res) => {
+     var sendArticleTime = new Date().getTime()
+     if (req.body.tagInput) {
+          Tag.find({ topicName: req.body.tagInput.trim() }, (err, resData) => {
+               if (err) {
+                    res.send({
+                         status: 'failed',
+                         data: '查找话题错误！'
+                    })
+               } else {
+                    if (resData.length != 0) {
+                         res.send({
+                              status: 'already',
+                              data: '已存在该话题，请直接筛选'
+                         })
+                    } else {
+                         var topics = new Tag({
+                              topicName: req.body.tagInput,
+                              time: sendArticleTime,
+                         });
+                         topics.save((err, res) => {
+                              if (err) console.log(err);
+                         });
+                         Blog.updateOne({ _id: req.body._id }, {
+                              $set: {
+                                   title: req.body.title,
+                                   region: req.body.tagInput,
+                                   desc: req.body.desc
+                              }
+                         }, (err, blog) => {
+                              if (err) {
+                                   res.send({
+                                        status: 'failed'
+                                   });
+                              } else {
+                                   res.send({
+                                        status: 'success'
+                                   });
+                              }
+                         })
+                    }
+               }
+          })
+     } else {
+          Blog.updateOne({ _id: req.body._id }, {
+               $set: {
+                    title: req.body.title,
+                    region: req.body.tagSelected,
+                    desc: req.body.desc
+               }
+          }, (err, blog) => {
+               if (err) {
+                    res.send({
+                         status: 'failed'
+                    });
+               } else {
+                    res.send({
+                         status: 'success'
+                    });
+               }
+          })
+     }
+
+})
 // 发表页面
 router.route("/issue").post((req, res) => {
      var sendArticleTime = new Date().getTime()
-     var blogs = new Blog({
-          title: req.body.title,
-          region: req.body.region,
-          desc: req.body.desc,
-          time: sendArticleTime,
-          Auid: req.body.userName,
-     });
-     blogs.save((err, resData) => {
-          if (err) {
-               res.send({
-                    status: 'failed',
-               })
-          }
-          res.send({
-               status: 'success'
+     if (req.body.tagInput) {
+          Tag.find({ topicName: req.body.tagInput.trim() }, (err, resData) => {
+               if (err) {
+                    res.send({
+                         status: 'failed',
+                         data: '查找话题错误！'
+                    })
+               } else {
+                    if (resData.length != 0) {
+                         res.send({
+                              status: 'already',
+                              data: '已存在该话题，请直接筛选'
+                         })
+                    } else {
+                         var topics = new Tag({
+                              topicName: req.body.tagInput,
+                              time: sendArticleTime,
+                         });
+                         topics.save((err, res) => {
+                              if (err) console.log(err);
+                         });
+                         var blogs = new Blog({
+                              title: req.body.title,
+                              region: req.body.tagSelected === '自定义' ? req.body.tagInput : req.body.tagSelected,
+                              desc: req.body.desc,
+                              time: sendArticleTime,
+                              Auid: req.body.userName,
+                         });
+                         blogs.save((err, resData) => {
+                              if (err) {
+                                   res.send({
+                                        status: 'failed',
+                                   })
+                              }
+                              res.send({
+                                   status: 'success'
+                              })
+                         });
+                    }
+               }
           })
-     });
+     } else {
+          var blogs = new Blog({
+               title: req.body.title,
+               region: req.body.tagSelected,
+               desc: req.body.desc,
+               time: sendArticleTime,
+               Auid: req.body.userName,
+          });
+          blogs.save((err, resData) => {
+               if (err) {
+                    res.send({
+                         status: 'failed',
+                    })
+               }
+               res.send({
+                    status: 'success'
+               })
+          });
+     }
 });
 
 // //点赞
@@ -293,6 +551,7 @@ router.route("/details-article").post((req, res) => {
      })
 })
 
+//用户管理更新
 router.route("/user-manage").post((req, res) => {
      User.updateOne({ _id: req.body._id }, {
           $set: {
@@ -313,6 +572,7 @@ router.route("/user-manage").post((req, res) => {
      })
 })
 
+//用户管理删除
 router.route("/user-delete").post((req, res) => {
      User.deleteOne({ _id: req.body.userId }, (err, blog) => {
           if (err) {

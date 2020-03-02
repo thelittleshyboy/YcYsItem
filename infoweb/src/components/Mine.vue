@@ -23,7 +23,7 @@
             v-model="signInput"
             placeholder="请输入签名内容"
             style="width:256px"
-            @keyup.enter.native="saveSign"
+            @keydown.enter.native="saveSign"
           ></el-input>
         </span>
       </div>
@@ -51,7 +51,7 @@
               </el-dialog>
             </el-form-item>
             <el-form-item>
-              <el-button type="primary" @click="onSubmit" v-show="!ifEdit">确 定</el-button>
+              <el-button type="primary" @click="onPersonalSubmit" v-show="!ifEdit">确 定</el-button>
               <el-button @click="init">重 置</el-button>
             </el-form-item>
           </el-form>
@@ -62,14 +62,29 @@
               <el-input v-model="infoForm.title"></el-input>
             </el-form-item>
             <el-form-item label="信息归类">
-              <el-select v-model="infoForm.region" placeholder="请选择活动区域" style="width:100%">
-                <el-option label="电影" value="电影"></el-option>
-                <el-option label="小说" value="小说"></el-option>
-                <el-option label="游戏" value="游戏"></el-option>
-                <el-option label="美食" value="美食"></el-option>
-                <el-option label="新闻" value="新闻"></el-option>
-                <el-option label="其他" value="其他"></el-option>
+              <el-select
+                v-model="infoForm.tagSelected"
+                filterable
+                remote
+                reserve-keyword
+                :remote-method="remoteMethod"
+                placeholder="请输入并选择选择话题"
+                :style="{'width': infoForm.tagSelected === '自定义' ? '50%' : '100%'}"
+              >
+                <el-option :key="defaultObject" :label="defaultObject" :value="defaultObject"></el-option>
+                <el-option
+                  v-for="(item, index) in topicOptions"
+                  :key="index"
+                  :label="item.topicName"
+                  :value="item.topicName"
+                ></el-option>
               </el-select>
+              <el-input
+                v-show="infoForm.tagSelected === '自定义'"
+                v-model="infoForm.tagInput"
+                placeholder="请输入你想创建的话题"
+                style="display:inline-block;width:49%"
+              ></el-input>
             </el-form-item>
             <el-form-item label="信息内容">
               <el-input
@@ -87,7 +102,7 @@
             </el-form-item>
           </el-form>
         </el-tab-pane>
-        <el-tab-pane label="信息管理">
+        <el-tab-pane label="信息管理" style="height: 680px">
           <div v-show="myList.length===0">您暂未发表文章</div>
           <div class="info-manage">
             <el-row v-for="(item, index) in myList" :key="index" class="details-info">
@@ -141,10 +156,17 @@
               </el-col>
             </el-row>
           </div>
+          <el-pagination
+            background
+            layout="prev, pager, next, jumper, slot"
+            :total="totalNum"
+            :page-size="pageSize"
+            :current-page="page"
+            @current-change="current_change"
+            style="position: absolute;bottom: 10px;left: 45%;"
+          ></el-pagination>
         </el-tab-pane>
-        <el-tab-pane label="定时任务补偿">
-          定时任务补偿
-        </el-tab-pane>
+        <el-tab-pane label="点赞与收藏">点赞与收藏</el-tab-pane>
       </el-tabs>
     </div>
   </div>
@@ -152,14 +174,17 @@
 
 <script>
 import { sendInfo, getAuList, deleteArticle, editArticle } from '../api/article'
+import { remoteSearch } from '../api/topic'
 
 export default {
   name: 'App',
-  filters: {
-
-  },
   data() {
     return {
+      pageSize: 0,
+      page: 1,
+      totalNum: 0,
+      defaultObject: '自定义',
+      topicOptions: [],
       dialogVisible: false,
       signInput: null,
       signShow: true,
@@ -175,7 +200,8 @@ export default {
       ],
       infoForm: {
         title: '',
-        region: '',
+        tagSelected: null,
+        tagInput: null,
         desc: '',
         userName: null
       },
@@ -189,14 +215,29 @@ export default {
     init() {
       this.infoForm = {
         title: '',
-        region: '',
+        tagSelected: null,
+        tagInput: null,
         desc: ''
       }
+    },
+    current_change(index) {
+      this.page = index
+      this.getList({index: '2'})
+    },
+    onPersonalSubmit() { },
+    remoteMethod(query) {
+      remoteSearch({ query: query.trim() }).then(res => {
+        if (res.data.status === "success") {
+          this.topicOptions = res.data.data
+        }
+      }).catch((error) => {
+        this.$message.error('失败！')
+      })
     },
     handlePictureCardPreview() {
       this.dialogVisible = true
     },
-    handleRemove() {},
+    handleRemove() { },
     showInput() {
       this.signShow = false
       this.signInput = this.sign
@@ -210,14 +251,20 @@ export default {
       if (localStorage.getItem('user')) {
         this.infoForm.userName = JSON.parse(localStorage.getItem('user')).userName
       }
-      if (!this.infoForm.title || !this.infoForm.region || !this.infoForm.desc || !this.infoForm.userName) {
-        this.$message.error('发布失败')
-        return
+      if (!this.infoForm.title || !this.infoForm.tagSelected || !this.infoForm.tagInput || !this.infoForm.desc || !this.infoForm.userName) {
+        if (this.infoForm.tagSelected === '自定义' && !this.infoForm.tagInput) {
+          this.$message.error('信息不能有空')
+          this.infoLoading = false
+          return
+        }
       }
       sendInfo(this.infoForm).then(res => {
         if (res.data.status === 'success') {
           this.$message.success('发布成功')
           this.init()
+          this.infoLoading = false
+        } else {
+          this.$message.error(res.data.data)
           this.infoLoading = false
         }
       }), err => {
@@ -228,9 +275,11 @@ export default {
     },
     getList(tab) {
       if (JSON.parse(localStorage.getItem('user')).userName && tab.index === '2') {
-        getAuList({ userName: JSON.parse(localStorage.getItem('user')).userName }).then(res => {
+        getAuList({ userName: JSON.parse(localStorage.getItem('user')).userName, page: this.page }).then(res => {
           if (res.data.status === 'success') {
             this.myList = res.data.data
+            this.pageSize = res.data.pageSize
+            this.totalNum = res.data.total
           }
         }), err => {
         }
