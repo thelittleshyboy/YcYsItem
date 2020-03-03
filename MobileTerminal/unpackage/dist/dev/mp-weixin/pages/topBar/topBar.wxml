@@ -1,0 +1,1 @@
+<view class="top-content"><image style="width:100px;height:30px;padding:10px;" src="../../static/image/webtitle.png" data-event-opts="{{[['error',[['imageError',['$event']]]]]}}" binderror="__e"></image><uni-search-bar class="searchbar" vue-id="1" placeholder="搜索" data-event-opts="{{[['^confirm',[['search']]]]}}" bind:confirm="__e" bind:__l="__l"></uni-search-bar></view>
