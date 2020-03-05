@@ -1,8 +1,8 @@
 <template>
   <div>
-    <el-carousel :interval="3000" type="card" height="300px">
-      <el-carousel-item v-for="item in imgList" :key="item.id">
-        <img :src="item.idView" style="width:841.5px;height:300px" />
+    <el-carousel height="450px">
+      <el-carousel-item v-for="item in imgList" :key="item">
+        <img :src="item.idView" style="width:100%" />
       </el-carousel-item>
     </el-carousel>
     <h2>
@@ -136,7 +136,7 @@ export default {
   width: 12%;
   height: 500px;
   position: absolute;
-  top: 600px;
+  top: 700px;
   right: 3%;
   background: #f2f2f5;
   padding: 20px;
