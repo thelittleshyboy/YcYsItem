@@ -40,20 +40,12 @@
                 <i class="el-icon-document"></i>
                 <span slot="title">我的</span>
               </el-menu-item>
-              <el-submenu index="/classify">
+              <el-menu-item index="/classify">
                 <template slot="title">
                   <i class="el-icon-location"></i>
-                  <span>分类</span>
+                  <span>话题</span>
                 </template>
-                <el-menu-item-group>
-                  <el-menu-item index="1-1">全部</el-menu-item>
-                  <el-menu-item index="/classify/movie">电影</el-menu-item>
-                  <el-menu-item index="1-3">小说</el-menu-item>
-                  <el-menu-item index="1-4">游戏</el-menu-item>
-                  <el-menu-item index="1-5">美食</el-menu-item>
-                  <el-menu-item index="1-6">丽人</el-menu-item>
-                </el-menu-item-group>
-              </el-submenu>
+              </el-menu-item>
               <el-submenu index="/manage" v-show="manage">
                 <template slot="title">
                   <i class="el-icon-setting"></i>
@@ -212,7 +204,6 @@ export default {
   data() {
     return {
       remoteLoading: false,
-      url: 'https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg',
       srcList: [
         'https://fuss10.elemecdn.com/8/27/f01c15bb73e1ef3793e64e6b7bbccjpeg.jpeg'
       ],
@@ -242,6 +233,9 @@ export default {
   computed: {
     manage() {
       return localStorage.getItem('manage')
+    },
+    url() {
+      return localStorage.getItem('user') ? 'http://'+JSON.parse(localStorage.getItem('user')).headImg : 'https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg'
     },
     user() {
       return localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user')).userName : null

@@ -172,6 +172,7 @@ export default {
     userDelete(id) {
       userDelete({ userId: id}).then(res => {
         if (res.data.status === 'success') {
+          this.page = 1
           this.allUser()
           this.dialogVisible = false
         }

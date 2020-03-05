@@ -10,12 +10,13 @@
       <span v-if="!searchValue">精选推荐</span>
     </h2>
     <el-divider></el-divider>
-    <div class="card-list-outside">
+    <div class="card-list-outside" v-loading="cardListLoading">
       <div class="card-list" v-for="(item, index) in allList" :key="index">
         <router-link :to="{name:'DetailsArticle',params:{id:item._id}}">
           <el-card class="card-style">
             <img
-              src="https://shadow.elemecdn.com/app/element/hamburger.9cf7b091-55e9-11e9-a976-7f4d0b07eef6.png"
+              :key="item._id"
+              :src="item.cover ? 'http://'+item.cover : 'https://fuss10.elemecdn.com/8/27/f01c15bb73e1ef3793e64e6b7bbccjpeg.jpeg'"
               class="image"
             />
             <div class="card-content">
@@ -55,6 +56,7 @@ export default {
   name: 'HelloWorld',
   data() {
     return {
+      cardListLoading: false,
       topicNewList: [],
       page: 1,
       totalNum: 0,
@@ -103,14 +105,17 @@ export default {
       }
     },
     getAllList() {
+      this.cardListLoading = true
       getAllList({ title: this.searchValue, page: this.page }).then(res => {
         if (res.data.status === 'success') {
           this.allList = res.data.data
           this.totalNum = res.data.total
           this.pageSize = res.data.pageSize
+          this.cardListLoading = false
         }
       }), err => {
         console.log(err)
+        this.cardListLoading = false
       }
     }
   }

@@ -107,6 +107,7 @@ export default {
       deleteArticle({ id: row._id }).then(res => {
         if (res.data.status === 'success') {
           this.$message.success('删除成功')
+          this.page = 1
           this.getAllList()
         }
       }), err => {

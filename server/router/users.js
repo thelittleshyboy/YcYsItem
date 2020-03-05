@@ -6,8 +6,6 @@ var Comt = require("../models/comt");
 var Tag = require("../models/tag");
 var crypto = require('crypto');
 // 图片上传
-var multer = require('multer')
-var upload = multer({ dest: 'upload/' });
 
 
 
@@ -369,137 +367,6 @@ router.route("/article-thumb-on").post((req, res) => {
           }
      })
 })
-
-//编辑信息
-router.route("/edit-article").post((req, res) => {
-     var sendArticleTime = new Date().getTime()
-     if (req.body.tagInput) {
-          Tag.find({ topicName: req.body.tagInput.trim() }, (err, resData) => {
-               if (err) {
-                    res.send({
-                         status: 'failed',
-                         data: '查找话题错误！'
-                    })
-               } else {
-                    if (resData.length != 0) {
-                         res.send({
-                              status: 'already',
-                              data: '已存在该话题，请直接筛选'
-                         })
-                    } else {
-                         var topics = new Tag({
-                              topicName: req.body.tagInput,
-                              time: sendArticleTime,
-                         });
-                         topics.save((err, res) => {
-                              if (err) console.log(err);
-                         });
-                         Blog.updateOne({ _id: req.body._id }, {
-                              $set: {
-                                   title: req.body.title,
-                                   region: req.body.tagInput,
-                                   desc: req.body.desc
-                              }
-                         }, (err, blog) => {
-                              if (err) {
-                                   res.send({
-                                        status: 'failed'
-                                   });
-                              } else {
-                                   res.send({
-                                        status: 'success'
-                                   });
-                              }
-                         })
-                    }
-               }
-          })
-     } else {
-          Blog.updateOne({ _id: req.body._id }, {
-               $set: {
-                    title: req.body.title,
-                    region: req.body.tagSelected,
-                    desc: req.body.desc
-               }
-          }, (err, blog) => {
-               if (err) {
-                    res.send({
-                         status: 'failed'
-                    });
-               } else {
-                    res.send({
-                         status: 'success'
-                    });
-               }
-          })
-     }
-
-})
-// 发表页面
-router.route("/issue").post((req, res) => {
-     var sendArticleTime = new Date().getTime()
-     if (req.body.tagInput) {
-          Tag.find({ topicName: req.body.tagInput.trim() }, (err, resData) => {
-               if (err) {
-                    res.send({
-                         status: 'failed',
-                         data: '查找话题错误！'
-                    })
-               } else {
-                    if (resData.length != 0) {
-                         res.send({
-                              status: 'already',
-                              data: '已存在该话题，请直接筛选'
-                         })
-                    } else {
-                         var topics = new Tag({
-                              topicName: req.body.tagInput,
-                              time: sendArticleTime,
-                         });
-                         topics.save((err, res) => {
-                              if (err) console.log(err);
-                         });
-                         var blogs = new Blog({
-                              title: req.body.title,
-                              region: req.body.tagSelected === '自定义' ? req.body.tagInput : req.body.tagSelected,
-                              desc: req.body.desc,
-                              time: sendArticleTime,
-                              Auid: req.body.userName,
-                         });
-                         blogs.save((err, resData) => {
-                              if (err) {
-                                   res.send({
-                                        status: 'failed',
-                                   })
-                              }
-                              res.send({
-                                   status: 'success'
-                              })
-                         });
-                    }
-               }
-          })
-     } else {
-          var blogs = new Blog({
-               title: req.body.title,
-               region: req.body.tagSelected,
-               desc: req.body.desc,
-               time: sendArticleTime,
-               Auid: req.body.userName,
-          });
-          blogs.save((err, resData) => {
-               if (err) {
-                    res.send({
-                         status: 'failed',
-                    })
-               }
-               res.send({
-                    status: 'success'
-               })
-          });
-     }
-});
-
 // //点赞
 // router.route("/bonus").post((req, res) => {
 //      Blog.findOne({
@@ -603,17 +470,5 @@ router.route("/user-delete").post((req, res) => {
 //      }
 // });
 
-// // 上传图片
-// router.route('/Myinfo', upload.single('avatar')).post((req, res, next) => {
-//      User.findOne({
-//           name: req.body.user
-//      }, (err, user) => {
-//           if (err) console.log(err);
-//           user.Avatar = req.body.imageUrl;
-//           console.log('user' + user);
-//      })
-// });
-// router.route('/Myinfo').get((req, res, next) => {
-//      res.send('get' + res)
-// });
+
 module.exports = router;

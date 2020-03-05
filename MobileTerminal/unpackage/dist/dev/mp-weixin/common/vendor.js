@@ -7704,9 +7704,9 @@ internalMixin(Vue);
 /***/ }),
 
 /***/ 21:
-/*!**************************************!*\
-  !*** D:/projecta/YCYItem/api/api.js ***!
-  \**************************************/
+/*!*****************************************************!*\
+  !*** D:/projecta/Ycy-web/MobileTerminal/api/api.js ***!
+  \*****************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -7732,9 +7732,9 @@ function getAllList(data) {
 /***/ }),
 
 /***/ 22:
-/*!********************************************!*\
-  !*** D:/projecta/YCYItem/utils/request.js ***!
-  \********************************************/
+/*!***********************************************************!*\
+  !*** D:/projecta/Ycy-web/MobileTerminal/utils/request.js ***!
+  \***********************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -7775,9 +7775,9 @@ request;exports.default = _default;
 /***/ }),
 
 /***/ 23:
-/*!************************************************!*\
-  !*** D:/projecta/YCYItem/static/image/ad1.jpg ***!
-  \************************************************/
+/*!***************************************************************!*\
+  !*** D:/projecta/Ycy-web/MobileTerminal/static/image/ad1.jpg ***!
+  \***************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports) {
 
@@ -7786,9 +7786,9 @@ module.exports = "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEASABIAAD/2wBDAAgGBgc
 /***/ }),
 
 /***/ 24:
-/*!************************************************!*\
-  !*** D:/projecta/YCYItem/static/image/ad2.jpg ***!
-  \************************************************/
+/*!***************************************************************!*\
+  !*** D:/projecta/Ycy-web/MobileTerminal/static/image/ad2.jpg ***!
+  \***************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -7797,9 +7797,9 @@ module.exports = __webpack_require__.p + "static/img/ad2.c32ec208.jpg";
 /***/ }),
 
 /***/ 25:
-/*!************************************************!*\
-  !*** D:/projecta/YCYItem/static/image/ad3.jpg ***!
-  \************************************************/
+/*!***************************************************************!*\
+  !*** D:/projecta/Ycy-web/MobileTerminal/static/image/ad3.jpg ***!
+  \***************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports) {
 
@@ -7808,9 +7808,9 @@ module.exports = "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEASABIAAD/2wBDAAgGBgc
 /***/ }),
 
 /***/ 26:
-/*!*************************************************!*\
-  !*** D:/projecta/YCYItem/static/image/nav1.jpg ***!
-  \*************************************************/
+/*!****************************************************************!*\
+  !*** D:/projecta/Ycy-web/MobileTerminal/static/image/nav1.jpg ***!
+  \****************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports) {
 
@@ -7819,9 +7819,9 @@ module.exports = "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEAAQABAAD/2wBDAAgGBgc
 /***/ }),
 
 /***/ 27:
-/*!*************************************************!*\
-  !*** D:/projecta/YCYItem/static/image/nav2.jpg ***!
-  \*************************************************/
+/*!****************************************************************!*\
+  !*** D:/projecta/Ycy-web/MobileTerminal/static/image/nav2.jpg ***!
+  \****************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports) {
 
@@ -7830,9 +7830,9 @@ module.exports = "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEASABIAAD/2wBDAAgGBgc
 /***/ }),
 
 /***/ 28:
-/*!*************************************************!*\
-  !*** D:/projecta/YCYItem/static/image/nav3.jpg ***!
-  \*************************************************/
+/*!****************************************************************!*\
+  !*** D:/projecta/Ycy-web/MobileTerminal/static/image/nav3.jpg ***!
+  \****************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports) {
 
@@ -7872,9 +7872,9 @@ module.exports = g;
 /***/ }),
 
 /***/ 4:
-/*!**************************************!*\
-  !*** D:/projecta/YCYItem/pages.json ***!
-  \**************************************/
+/*!*****************************************************!*\
+  !*** D:/projecta/Ycy-web/MobileTerminal/pages.json ***!
+  \*****************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -8782,21 +8782,21 @@ module.exports = {"_from":"@dcloudio/uni-stat@alpha","_id":"@dcloudio/uni-stat@2
 /***/ }),
 
 /***/ 7:
-/*!*******************************************************!*\
-  !*** D:/projecta/YCYItem/pages.json?{"type":"style"} ***!
-  \*******************************************************/
+/*!**********************************************************************!*\
+  !*** D:/projecta/Ycy-web/MobileTerminal/pages.json?{"type":"style"} ***!
+  \**********************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _default = { "pages": { "pages/index/index": { "navigationBarTitleText": "首页" }, "pages/class/class": { "navigationBarTitleText": "分类" }, "pages/mine/mine": { "navigationBarTitleText": "我的" } }, "globalStyle": { "navigationBarTextStyle": "black", "navigationBarTitleText": "uni-app", "navigationBarBackgroundColor": "#F8F8F8", "backgroundColor": "#F8F8F8" } };exports.default = _default;
+Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _default = { "pages": { "pages/index/index": { "navigationBarTitleText": "首页" }, "pages/class/class": { "navigationBarTitleText": "分类", "usingComponents": {}, "usingAutoImportComponents": {} }, "pages/mine/mine": { "navigationBarTitleText": "我的", "usingComponents": {}, "usingAutoImportComponents": {} } }, "globalStyle": { "navigationBarTextStyle": "black", "navigationBarTitleText": "uni-app", "navigationBarBackgroundColor": "#F8F8F8", "backgroundColor": "#F8F8F8" } };exports.default = _default;
 
 /***/ }),
 
 /***/ 76:
-/*!*********************************************************!*\
-  !*** D:/projecta/YCYItem/components/uni-icons/icons.js ***!
-  \*********************************************************/
+/*!************************************************************************!*\
+  !*** D:/projecta/Ycy-web/MobileTerminal/components/uni-icons/icons.js ***!
+  \************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -8936,9 +8936,9 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
 /***/ }),
 
 /***/ 8:
-/*!******************************************************!*\
-  !*** D:/projecta/YCYItem/pages.json?{"type":"stat"} ***!
-  \******************************************************/
+/*!*********************************************************************!*\
+  !*** D:/projecta/Ycy-web/MobileTerminal/pages.json?{"type":"stat"} ***!
+  \*********************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 

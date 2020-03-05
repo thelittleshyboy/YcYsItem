@@ -1,10 +1,11 @@
 const  mongoose = require('mongoose')
 var blogSchema=new mongoose.Schema({
-    title:String,
-    region:String,
-    desc:String,
+    title: String,
+    region: String,
+    desc: String,
     time: String,
-    Auid : String
+    Auid : String,
+    cover: String
 })
 
 module.exports = mongoose.model('Blog',blogSchema);

@@ -38,8 +38,14 @@
             </el-form-item>
             <el-form-item label="上传头像">
               <el-upload
-                action="https://jsonplaceholder.typicode.com/posts/"
+                class="avatar-uploader"
+                :limit="1"
+                action="http://localhost:3300/upload/upload"
+                :on-exceed="onLimit"
+                :file-list="fileList"
                 list-type="picture-card"
+                :http-request="beforeUpload"
+                :on-change="changeFiles"
                 :on-preview="handlePictureCardPreview"
                 :on-remove="handleRemove"
                 style="float:left"
@@ -86,6 +92,26 @@
                 style="display:inline-block;width:49%"
               ></el-input>
             </el-form-item>
+            <el-form-item label="上传封面">
+              <el-upload
+                class="avatar-uploader"
+                :limit="1"
+                action="http://localhost:3300/upload/upload"
+                :on-exceed="onLimit"
+                :file-list="fileList"
+                list-type="picture-card"
+                :http-request="beforeUpload"
+                :on-change="changeFiles"
+                :on-preview="handlePictureCardPreview"
+                :on-remove="handleRemove"
+                style="float:left"
+              >
+                <i class="el-icon-plus"></i>
+              </el-upload>
+              <el-dialog :visible.sync="dialogVisible" size="tiny">
+                <img width="100%" alt />
+              </el-dialog>
+            </el-form-item>
             <el-form-item label="信息内容">
               <el-input
                 type="textarea"
@@ -111,8 +137,7 @@
                   <div class="demo-image__preview">
                     <el-image
                       style="width: 100%; height: 200px;"
-                      :src="url"
-                      :preview-src-list="srcList"
+                      :src="item.cover ? 'http://'+item.cover : 'https://fuss10.elemecdn.com/8/27/f01c15bb73e1ef3793e64e6b7bbccjpeg.jpeg'"
                     ></el-image>
                   </div>
                 </el-col>
@@ -173,13 +198,19 @@
 </template>
 
 <script>
-import { sendInfo, getAuList, deleteArticle, editArticle } from '../api/article'
+import { sendInfo, getAuList, deleteArticle, editArticle, upload } from '../api/article'
 import { remoteSearch } from '../api/topic'
+import picUpload from '../components/upload/picUpload'
 
 export default {
   name: 'App',
+  components: {
+    picUpload
+  },
   data() {
     return {
+      fileList: [],
+      uploadFile: null,
       pageSize: 0,
       page: 1,
       totalNum: 0,
@@ -194,10 +225,6 @@ export default {
       manageLoading: false,
       rate: 3.7,
       infoLoading: false,
-      url: 'https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg',
-      srcList: [
-        'https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg'
-      ],
       infoForm: {
         title: '',
         tagSelected: null,
@@ -211,6 +238,17 @@ export default {
       myList: []
     }
   },
+  computed: {
+    url() {
+      return localStorage.getItem('user') ? 'http://' + JSON.parse(localStorage.getItem('user')).headImg : 'https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg'
+    },
+    srcList() {
+      return localStorage.getItem('user') ? ['http://' + JSON.parse(localStorage.getItem('user')).headImg] : ['https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg']
+    },
+    user() {
+      return localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user')).userName : null
+    }
+  },
   methods: {
     init() {
       this.infoForm = {
@@ -220,11 +258,39 @@ export default {
         desc: ''
       }
     },
+    onLimit() {
+      this.$message.error("头像只能上传一张")
+    },
+    changeFiles(file, fileList) {
+    },
+    beforeUpload(val) {
+      this.uploadFile = val.file
+    },
     current_change(index) {
       this.page = index
-      this.getList({index: '2'})
+      this.getList({ index: '2' })
     },
-    onPersonalSubmit() { },
+    dealFormData(formDataList) {
+      const formData = new FormData();
+      const headerConfig = { headers: { 'Content-Type': 'multipart/form-data' } };
+      if (!this.uploadFile) { // 若未选择文件
+        this.$message.error('请选择上传图片')
+        return false;
+      }
+      formDataList.forEach(item => {
+        formData.append(item.key, item.value)
+      })
+      return [formData, headerConfig]
+    },
+    onPersonalSubmit() {
+      let list = [{ key:'file',value: this.uploadFile }, { key: 'userId', value: JSON.parse(localStorage.getItem('user'))._id }]
+      upload(this.dealFormData(list)[0], this.dealFormData(list)[1]).then(res => {
+        if (res.data.status === "success") {
+          this.$message.success('修改成功,请重新登录')
+        }
+      }).catch((error) => {
+      })
+    },
     remoteMethod(query) {
       remoteSearch({ query: query.trim() }).then(res => {
         if (res.data.status === "success") {
@@ -258,7 +324,15 @@ export default {
           return
         }
       }
-      sendInfo(this.infoForm).then(res => {
+      let infoFormList = []
+      for (let prop in this.infoForm) {
+        infoFormList.push({
+          key: prop,
+          value: this.infoForm[prop]
+        })
+      }
+      infoFormList = [{ key:'file',value: this.uploadFile }, ...infoFormList]
+      sendInfo(this.dealFormData(infoFormList)[0], this.dealFormData(infoFormList)[1]).then(res => {
         if (res.data.status === 'success') {
           this.$message.success('发布成功')
           this.init()
@@ -302,24 +376,26 @@ export default {
     },
     backForm(item) {
       this.infoForm = Object.assign({}, item)
+      this.infoForm.tagSelected = item.region
       this.activeName = 'sendInfo'
       this.ifEdit = true
     },
     onEdit(item) {
-      editArticle(this.infoForm).then(res => {
+      let editList = []
+      for (let prop in this.infoForm) {
+        editList.push({
+          key: prop,
+          value: this.infoForm[prop]
+        })
+      }
+      editList = [{ key:'file',value: this.uploadFile }, ...editList]
+      editArticle(this.dealFormData(editList)[0], this.dealFormData(editList)[1]).then(res => {
         if (res.data.status === 'success') {
           this.$message.success('编辑成功')
           this.init()
         }
       }), err => {
       }
-    }
-  },
-  mounted() {
-  },
-  computed: {
-    user() {
-      return localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user')).userName : null
     }
   }
 }
@@ -338,7 +414,8 @@ export default {
   border: 1px;
   background-image: url("../assets/backImg3.jpg");
   width: 100%;
-  height: 1000px;
+  min-height: 1000px;
+  padding-bottom: 50px;
 }
 .info-manage {
   width: 100%;

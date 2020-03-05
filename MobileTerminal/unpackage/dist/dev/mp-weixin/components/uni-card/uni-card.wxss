@@ -24,7 +24,7 @@
 /* 垂直间距 */
 /* 透明度 */
 /* 文章场景相关 */
-.uni-card.data-v-17f5c36c {
+.uni-card.data-v-72261595 {
   display: -webkit-box;
   display: -webkit-flex;
   display: flex;
@@ -45,7 +45,7 @@
   border-radius: 3px;
   overflow: hidden;
 }
-.uni-card__thumbnailimage.data-v-17f5c36c {
+.uni-card__thumbnailimage.data-v-72261595 {
   position: relative;
   -webkit-box-orient: vertical;
   -webkit-box-direction: normal;
@@ -57,7 +57,7 @@
   height: 150px;
   overflow: hidden;
 }
-.uni-card__thumbnailimage-box.data-v-17f5c36c {
+.uni-card__thumbnailimage-box.data-v-72261595 {
   display: -webkit-box;
   display: -webkit-flex;
   display: flex;
@@ -70,12 +70,12 @@
           flex-direction: row;
   overflow: hidden;
 }
-.uni-card__thumbnailimage-image.data-v-17f5c36c {
+.uni-card__thumbnailimage-image.data-v-72261595 {
   -webkit-box-flex: 1;
   -webkit-flex: 1;
           flex: 1;
 }
-.uni-card__thumbnailimage-title.data-v-17f5c36c {
+.uni-card__thumbnailimage-title.data-v-72261595 {
   display: -webkit-box;
   display: -webkit-flex;
   display: flex;
@@ -90,14 +90,14 @@
   padding: 16rpx 24rpx;
   background-color: rgba(0, 0, 0, 0.4);
 }
-.uni-card__thumbnailimage-title-text.data-v-17f5c36c {
+.uni-card__thumbnailimage-title-text.data-v-72261595 {
   -webkit-box-flex: 1;
   -webkit-flex: 1;
           flex: 1;
   font-size: 28rpx;
   color: #fff;
 }
-.uni-card__title.data-v-17f5c36c {
+.uni-card__title.data-v-72261595 {
   display: -webkit-box;
   display: -webkit-flex;
   display: flex;
@@ -110,17 +110,17 @@
   border-bottom-style: solid;
   border-bottom-width: 1px;
 }
-.uni-card__title-header.data-v-17f5c36c {
+.uni-card__title-header.data-v-72261595 {
   width: 40px;
   height: 40px;
   overflow: hidden;
   border-radius: 5px;
 }
-.uni-card__title-header-image.data-v-17f5c36c {
+.uni-card__title-header-image.data-v-72261595 {
   width: 40px;
   height: 40px;
 }
-.uni-card__title-content.data-v-17f5c36c {
+.uni-card__title-content.data-v-72261595 {
   display: -webkit-box;
   display: -webkit-flex;
   display: flex;
@@ -135,17 +135,17 @@
   height: 40px;
   overflow: hidden;
 }
-.uni-card__title-content-title.data-v-17f5c36c {
+.uni-card__title-content-title.data-v-72261595 {
   font-size: 28rpx;
   line-height: 22px;
   lines: 1;
 }
-.uni-card__title-content-extra.data-v-17f5c36c {
+.uni-card__title-content-extra.data-v-72261595 {
   font-size: 26rpx;
   line-height: 35rpx;
   color: #999;
 }
-.uni-card__header.data-v-17f5c36c {
+.uni-card__header.data-v-72261595 {
   display: -webkit-box;
   display: -webkit-flex;
   display: flex;
@@ -162,7 +162,7 @@
   border-bottom-style: solid;
   border-bottom-width: 1px;
 }
-.uni-card__header-title.data-v-17f5c36c {
+.uni-card__header-title.data-v-72261595 {
   display: -webkit-box;
   display: -webkit-flex;
   display: flex;
@@ -178,7 +178,7 @@
   -webkit-align-items: center;
           align-items: center;
 }
-.uni-card__header-title-text.data-v-17f5c36c {
+.uni-card__header-title-text.data-v-72261595 {
   font-size: 32rpx;
   -webkit-box-flex: 1;
   -webkit-flex: 1;
@@ -187,12 +187,12 @@
   overflow: hidden;
   text-overflow: ellipsis;
 }
-.uni-card__header-extra-img.data-v-17f5c36c {
+.uni-card__header-extra-img.data-v-72261595 {
   height: 40rpx;
   width: 40rpx;
   margin-right: 16rpx;
 }
-.uni-card__header-extra-text.data-v-17f5c36c {
+.uni-card__header-extra-text.data-v-72261595 {
   -webkit-box-flex: 1;
   -webkit-flex: 1;
           flex: 1;
@@ -201,18 +201,18 @@
   text-align: right;
   color: #999;
 }
-.uni-card__content.data-v-17f5c36c {
+.uni-card__content.data-v-72261595 {
   color: #333;
 }
-.uni-card__content--pd.data-v-17f5c36c {
+.uni-card__content--pd.data-v-72261595 {
   padding: 24rpx;
 }
-.uni-card__content-extra.data-v-17f5c36c {
+.uni-card__content-extra.data-v-72261595 {
   font-size: 28rpx;
   padding-bottom: 10px;
   color: #999;
 }
-.uni-card__footer.data-v-17f5c36c {
+.uni-card__footer.data-v-72261595 {
   -webkit-box-pack: justify;
   -webkit-justify-content: space-between;
           justify-content: space-between;
@@ -221,17 +221,17 @@
   border-top-style: solid;
   border-top-width: 1px;
 }
-.uni-card__footer-text.data-v-17f5c36c {
+.uni-card__footer-text.data-v-72261595 {
   color: #999;
   font-size: 28rpx;
 }
-.uni-card--shadow.data-v-17f5c36c {
+.uni-card--shadow.data-v-72261595 {
   border-color: #c8c7cc;
   border-style: solid;
   border-width: 1px;
   box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.2);
 }
-.uni-card--full.data-v-17f5c36c {
+.uni-card--full.data-v-72261595 {
   margin: 0;
   border-radius: 0;
 }

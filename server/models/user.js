@@ -9,7 +9,7 @@ var userSchema = new mongoose.Schema({
     Collection: Array, // 收藏
     thumbsUp: Array, // 点赞
     jurisdiction: String,
-    // headImg: // 头像
+    headImg: String,// 头像
     status: Boolean // 号码状态
 })
 

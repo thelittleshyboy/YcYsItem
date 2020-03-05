@@ -12,6 +12,9 @@ const service = axios.create({
 
 // request interceptor
 service.interceptors.request.use(config => {
+    if (config.headers['Content-Type'] === 'multipart/form-data') {
+      return config
+    }
     config.headers['Content-Type'] = 'application/x-www-form-urlencoded' 
     if (config.method === 'post') { 
       config.data = qs.stringify({

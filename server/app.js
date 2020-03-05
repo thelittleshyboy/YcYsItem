@@ -5,6 +5,7 @@ var FileStore = require('session-file-store')(session);
 var app = new express()
 const  bodyParser = require('body-parser')
 var router = require('./router/users');
+var upload = require('./router/upload')
 const url = "mongodb://localhost:27017/ycyweb"
 
 mongoose.connect(url,{useNewUrlParser:true},(err)=>{
@@ -37,6 +38,7 @@ app.use(session({
 }));
 
 app.use('/user',router)  //将路由注册到/user的路径下
+app.use('/upload', upload)
 
 var port = process.env.PORT || 3300;
 app.listen(port);

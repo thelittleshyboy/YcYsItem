@@ -31,3 +31,11 @@ export function allUser(data) {
     data
   })
 }
+
+export function picUpload(data) {
+  return request({
+    url: '/user/pic-upload',
+    method: 'post',
+    data
+  })
+}
