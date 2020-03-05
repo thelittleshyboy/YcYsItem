@@ -1,6 +1,6 @@
 var express = require('express');
 var multer = require('multer')
-import { envUrl } from '../devConfig/serverConfig'
+var envUrl = "175.24.73.40:80/"
 var User = require("../models/user");
 var Tag = require("../models/tag");
 var Blog = require("../models/blog");
