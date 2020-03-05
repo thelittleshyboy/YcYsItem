@@ -1,6 +1,6 @@
 var express = require('express');
 var multer = require('multer')
-const envUrl = 'localhost:80/'
+import { envUrl } from '../devConfig/serverConfig'
 var User = require("../models/user");
 var Tag = require("../models/tag");
 var Blog = require("../models/blog");
@@ -26,7 +26,7 @@ upload.post('/upload', uploads.single('file'), (req, res) => {
   console.log(req.file);//获取到的文件
   //做些其他事情
   var file = req.file
-  Blog.updateOne({ _id: req.body.userId }, {
+  User.updateOne({ _id: req.body.userId }, {
     $set: {
       headImg: envUrl + file.filename
     }

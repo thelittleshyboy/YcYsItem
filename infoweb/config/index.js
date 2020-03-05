@@ -11,7 +11,7 @@ module.exports = {
     assetsPublicPath: '/',
     proxyTable: {
       '/portal': {
-        target: 'http://localhost:3300',
+        target: '',
         //target:被请求的地址
         changeOrigin:true,
         //changeOrigin 是否代理
