@@ -1,9 +1,9 @@
 <template>
   <div>
     <div class="main-left">
-      <el-carousel height="350px" class="carousel">
+      <el-carousel height="300px" class="carousel">
         <el-carousel-item v-for="item in imgList" :key="item.idView">
-          <img :src="item.idView" style="width:100%" />
+          <img :src="item.idView" style="width:100%;height:300px" />
         </el-carousel-item>
       </el-carousel>
       <h2>
@@ -42,8 +42,15 @@
     </div>
     <div class="hot-user">
       <h2>活跃用户</h2>
-      <div v-for="(item, index) in topicNewList" :key="index">
-        <el-button type="text" style="color: #333;" @click="jumpTopic(item)">#{{ item.topicName }}</el-button>
+      <div class="hot-user-headimg">
+        <div v-for="(item, index) in hotUserList" :key="index" style="margin-left: 15px">
+          <img
+            :key="index"
+            :src="'http://'+item.headImg"
+            style="width:50px;height:50px;border-radius: 25px"
+          />
+          <div style="font-size: 10px">{{ item.userName }}</div>
+        </div>
       </div>
     </div>
     <div class="hot-title">
@@ -58,12 +65,14 @@
 <script>
 import { getAllList, articleDetails } from "../api/article";
 import DetailsArticle from "./DetailsArticle.vue";
+import { allUser } from "../api/user";
 import { newTopic } from "../api/topic";
 
 export default {
   name: "HelloWorld",
   data() {
     return {
+      hotUserList: [],
       cardListLoading: false,
       topicNewList: [],
       page: 1,
@@ -91,6 +100,7 @@ export default {
   mounted() {
     this.getAllList();
     this.newTopic();
+    this.allUser();
   },
   computed: {
     searchValue() {
@@ -103,6 +113,17 @@ export default {
     }
   },
   methods: {
+    allUser() {
+      allUser({ page: 1 }).then(res => {
+        if (res.data.status === "success") {
+          this.hotUserList = res.data.data;
+        }
+      }),
+        err => {
+          console.log(err);
+          this.tableLoading = false;
+        };
+    },
     jumpTopic(item) {
       this.$router.push({
         name: "Topic",
@@ -148,11 +169,20 @@ export default {
   width: 70%;
 }
 
+.hot-user-headimg {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  width: 100%;
+  height: 150px;
+  text-align: center;
+}
+
 .hot-user {
-  width: 12%;
-  height: 400px;
+  width: 15%;
+  height: 200px;
   position: absolute;
-  top: 200px;
+  top: 100px;
   right: 3%;
   background: #f2f2f5;
   padding: 20px;
@@ -162,10 +192,10 @@ export default {
 }
 
 .hot-title {
-  width: 12%;
+  width: 15%;
   height: 500px;
   position: absolute;
-  top: 700px;
+  top: 400px;
   right: 3%;
   background: #f2f2f5;
   padding: 20px;

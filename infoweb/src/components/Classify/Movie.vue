@@ -9,7 +9,7 @@
               <el-col :span="6">
                 <div class="demo-image__preview">
                   <el-image
-                    style="width: 100%; height: 200px;"
+                    style="width: 100%; height: 220px;"
                     :src="item.cover ? 'http://'+item.cover : 'https://fuss10.elemecdn.com/8/27/f01c15bb73e1ef3793e64e6b7bbccjpeg.jpeg'"
                   ></el-image>
                 </div>
@@ -18,7 +18,7 @@
             <el-col :span="18">
               <el-row>
                 <el-col :span="14">
-                  <span>#{{ item.region }}#</span>
+                  <div style="margin-left:25px">#{{ item.region }}#</div>
                   <h2
                     style="float:left;margin-left:25px;color:black"
                   >{{ item ? item.title : '' | ellipsis(20) }}</h2>
@@ -33,7 +33,7 @@
                 <el-col
                   :span="23"
                   style="overflow:hidden;margin-left:25px;color:black"
-                >{{ item ? item.desc : '' | ellipsis(300) }}</el-col>
+                >{{ item ? item.desc : '' | ellipsis(100) }}</el-col>
               </el-row>
               <el-row>
                 <el-rate

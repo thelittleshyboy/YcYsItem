@@ -67,7 +67,7 @@
             <el-col :span="2">
               <img
                 src="../static/webtitle.png"
-                style="padding-top: 15px;padding-left:50px;width: 70px;height: 50px"
+                style="padding:13px;width: 70px;height: 50px"
               />
             </el-col>
             <el-col :span="10">
