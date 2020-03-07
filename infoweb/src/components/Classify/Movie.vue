@@ -3,6 +3,7 @@
     <el-row :gutter="20">
       <el-col :span="17" :offset="1">
         <div class="topic-content">
+          <div v-show="myList.length===0">没有搜索到结果哦~</div>
           <el-row v-for="(item, index) in myList" :key="index" class="details-info">
             <router-link :to="{name:'DetailsArticle',params:{id:item._id}}">
               <el-col :span="6">
@@ -63,9 +64,14 @@
             <h1>话题</h1>
           </div>
           <div class="topic-right-header">
-            <el-input placeholder="请输入文章标题搜索" v-model="searchValue" class="search-input">
-              <el-button slot="append" icon="el-icon-search" @click="searchTopic"></el-button>
+            <el-input placeholder="请输入话题搜索" v-model="searchValue" class="search-input">
+              <el-button slot="append" icon="el-icon-search" @click="getAllList"></el-button>
             </el-input>
+            <div class="history-search" v-show="searchList.length !== 0">
+              <el-tag v-for="(tag, index) in searchList" :key="index" closable style="margin-left: 10px;cursor: pointer;" @click="historyBack(tag)" @close="popHistory(index)">
+                {{tag}}
+              </el-tag>
+            </div>
           </div>
           <div class="topic-right-hot">
             <h2>最新话题</h2>
@@ -80,58 +86,70 @@
 </template>
 
 <script>
-import { getAllList } from '../../api/article'
-import { newTopic } from '../../api/topic'
+import { getAllList } from "../../api/article";
+import { newTopic } from "../../api/topic";
 
 export default {
-  name: 'App',
+  name: "Topic",
   data() {
     return {
       myList: [],
+      searchList: [],
       topicNewList: [],
       page: 1,
       totalNum: 0,
       pageSize: 0,
       rate: 3.7,
       searchValue: null
-    }
+    };
   },
   mounted() {
-    this.getAllList()
-    this.newTopic()
+    this.newTopic();
+    if(this.$route.params.searchValue) {
+      this.searchValue = this.$route.params.searchValue
+    }
+    this.getAllList();
   },
   methods: {
     newTopic() {
       newTopic().then(res => {
-        if (res.data.status === 'success') {
-          this.topicNewList = res.data.data
+        if (res.data.status === "success") {
+          this.topicNewList = res.data.data;
         }
-      }), err => {
-        console.log(err)
-      }
-    },
-    searchTopic() {
-
+      }),
+        err => {
+          console.log(err);
+        };
     },
     handleWatch(item) {
-      this.$router.push('/details/' + item._id)
+      this.$router.push("/details/" + item._id);
     },
-    current_change(index) {
-      this.page = index
+    popHistory(index) {
+      this.searchList.splice(index, 1)
+    },
+    historyBack(tag) {
+      this.searchValue = tag
       this.getAllList()
     },
-    getAllList() {
-      getAllList({ title: this.searchValue, page: this.page }).then(res => {
-        if (res.data.status === 'success') {
-          this.myList = res.data.data
-          this.pageSize = res.data.pageSize
-          this.totalNum = res.data.total
-        }
-      }), err => {
-      }
+    current_change(index) {
+      this.page = index;
+      this.getAllList();
     },
+    getAllList() {
+      if (this.searchValue) {
+        this.searchList.unshift(this.searchValue);
+      }
+      getAllList({ region: this.searchValue, page: this.page }).then(res => {
+        if (res.data.status === "success") {
+          this.myList = res.data.data;
+          this.pageSize = res.data.pageSize;
+          this.totalNum = res.data.total;
+        }
+      }),
+        err => {};
+    }
   }
-}
+};
 </script>
 
 <style scoped>
@@ -182,5 +200,14 @@ export default {
   margin-top: 10px;
   line-height: 20px;
   text-align: left;
+}
+.history-search {
+  width: 100%;
+  margin-top: 90px;
+  height: 100px;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  overflow: hidden;
 }
 </style>

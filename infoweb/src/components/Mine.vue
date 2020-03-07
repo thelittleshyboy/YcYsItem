@@ -40,7 +40,7 @@
               <el-upload
                 class="avatar-uploader"
                 :limit="1"
-                :action="uploadPic"
+                action="uploadPic"
                 :on-exceed="onLimit"
                 :file-list="fileList"
                 list-type="picture-card"
@@ -96,7 +96,7 @@
               <el-upload
                 class="avatar-uploader"
                 :limit="1"
-                :action="uploadPic"
+                action="uploadPic"
                 :on-exceed="onLimit"
                 :file-list="fileList"
                 list-type="picture-card"
@@ -200,17 +200,11 @@
 <script>
 import { sendInfo, getAuList, deleteArticle, editArticle, upload } from '../api/article'
 import { remoteSearch } from '../api/topic'
-import picUpload from '../components/upload/picUpload'
-import { uploadPic } from '../../config/devConfig'
 
 export default {
   name: 'App',
-  components: {
-    picUpload
-  },
   data() {
     return {
-      uploadPic: uploadPic,
       fileList: [],
       uploadFile: null,
       pageSize: 0,

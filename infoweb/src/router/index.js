@@ -75,7 +75,7 @@ const router = new Router({
     },
     {
       path: '/classify/movie',
-      name: 'Movie',
+      name: 'Topic',
       component: () => import('@/components/Classify/Movie'),
       meta: { 
         title: '电影',

@@ -79,6 +79,7 @@ export default {
   name: 'DetailsArticle',
   data() {
     return {
+      url: 'https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg',
       commentVisible: false,
       commentList: [],
       comment: '',
@@ -91,7 +92,6 @@ export default {
         time: null,
         Auid: null
       },
-      url: 'https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg',
       srcList: [
         'https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg'
       ],
@@ -138,6 +138,7 @@ export default {
       detailsArticle({ id: this.$route.params.id }).then(res => {
         if (res.data.status === 'success') {
           this.detailObject = res.data.data
+          this.url = 'http://'+res.data.data.cover
         }
       }), err => {
       }

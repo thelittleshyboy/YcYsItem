@@ -66,8 +66,8 @@
           <el-row>
             <el-col :span="2">
               <img
-                src=""
-                style="padding-top: 10px;width: 100px;height: 50px"
+                src="../static/webtitle.png"
+                style="padding-top: 15px;padding-left:50px;width: 70px;height: 50px"
               />
             </el-col>
             <el-col :span="10">
@@ -198,6 +198,7 @@
 <script>
 import { registerUser } from './api/user'
 import { remoteSearch } from './api/article'
+import { mapState } from "vuex";
 
 export default {
   name: 'App',
