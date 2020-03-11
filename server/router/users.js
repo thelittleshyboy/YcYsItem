@@ -1,4 +1,4 @@
-const express = require("express");
+﻿const express = require("express");
 var router = express.Router();
 var User = require("../models/user");
 var Blog = require("../models/blog");
@@ -63,7 +63,8 @@ router.route("/register").post((req, res) => {
                               passWord: truePassword,
                               time: time,
                               jurisdiction: 'user',
-                              status: true
+                              status: true，
+		              headImg: '175.24.73.40:80/none.jpg'
                          });
                          users.save((err, res) => {
                               if (err) console.log(err);
@@ -109,6 +110,19 @@ router.route("/get-comment").post((req, res) => {
           res.send({
                status: 'success',
                data: comment,
+          });
+     })
+});
+
+//根据id找用户
+router.route("/find-user").post((req, res) => {
+     User.findOne({_id: req.body.id}, (err, user) => {
+          if (err) {
+               console.log(err);
+          }
+          res.send({
+               status: 'success',
+               data: user
           });
      })
 });
