@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div id="app">
     <el-container>
       <el-aside width="180px">
@@ -46,7 +46,7 @@
                   <span>话题</span>
                 </template>
               </el-menu-item>
-              <el-submenu index="/manage">
+              <el-submenu v-show="manage" index="/manage">
                 <template slot="title">
                   <i class="el-icon-setting"></i>
                   <span>管理</span>
