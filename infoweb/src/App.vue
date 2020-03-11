@@ -46,7 +46,7 @@
                   <span>话题</span>
                 </template>
               </el-menu-item>
-              <el-submenu index="/manage" v-show="manage">
+              <el-submenu index="/manage">
                 <template slot="title">
                   <i class="el-icon-setting"></i>
                   <span>管理</span>
@@ -101,7 +101,7 @@
             </el-col>
           </el-row>
         </el-header>
-        <el-main>
+        <el-main style="padding:0">
           <router-view />
         </el-main>
       </el-container>

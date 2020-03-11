@@ -1,9 +1,9 @@
 <template>
   <div>
     <div class="main-left">
-      <el-carousel height="300px" class="carousel">
+      <el-carousel height="400px" class="carousel">
         <el-carousel-item v-for="item in imgList" :key="item.idView">
-          <img :src="item.idView" style="width:100%;height:300px" />
+          <img :src="item.idView" style="width:100%;height:400px" />
         </el-carousel-item>
       </el-carousel>
       <h2>
