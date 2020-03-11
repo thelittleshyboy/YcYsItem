@@ -63,7 +63,7 @@ router.route("/register").post((req, res) => {
                               passWord: truePassword,
                               time: time,
                               jurisdiction: 'user',
-                              status: true，
+                              status: true,
 		              headImg: '175.24.73.40:80/none.jpg'
                          });
                          users.save((err, res) => {
