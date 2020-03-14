@@ -36,6 +36,18 @@
             <el-form-item label="修改密码">
               <el-input v-model="userForm.password"></el-input>
             </el-form-item>
+            <el-form-item label="签名">
+              <el-input v-model="userForm.sign"></el-input>
+            </el-form-item>
+            <el-form-item label="性别">
+              <el-input v-model="userForm.password"></el-input>
+            </el-form-item>
+            <el-form-item label="生日">
+              <el-input v-model="userForm.password"></el-input>
+            </el-form-item>
+            <el-form-item label="地区">
+              <el-input v-model="userForm.password"></el-input>
+            </el-form-item>
             <el-form-item label="上传头像">
               <el-upload
                 class="avatar-uploader"
@@ -224,7 +236,7 @@ export default {
       infoForm: {
         title: '',
         tagSelected: null,
-        tagInput: null,
+        tagInput: '',
         desc: '',
         userName: null
       },
@@ -250,7 +262,7 @@ export default {
       this.infoForm = {
         title: '',
         tagSelected: null,
-        tagInput: null,
+        tagInput: '',
         desc: ''
       }
     },
@@ -332,6 +344,7 @@ export default {
         if (res.data.status === 'success') {
           this.$message.success('发布成功')
           this.init()
+          this.fileList = []
           this.infoLoading = false
         } else {
           this.$message.error(res.data.data)

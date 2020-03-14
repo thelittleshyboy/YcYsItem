@@ -25,7 +25,6 @@
         <el-row>
           <el-col :span="24">
             <el-menu
-              default-active="/home"
               class="el-menu-vertical-demo"
               background-color="#444444"
               text-color="#fff"

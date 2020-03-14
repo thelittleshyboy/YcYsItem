@@ -90,3 +90,11 @@ export function upload(data, {headers}) {
         headers
     })
 }
+
+export function rate(data) {
+    return request({
+        url: '/user/rate',
+        method: 'post',
+        data
+    })
+}

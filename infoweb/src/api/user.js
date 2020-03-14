@@ -39,3 +39,11 @@ export function picUpload(data) {
     data
   })
 }
+
+export function findUser(data) {
+  return request({
+    url: '/user/find-user',
+    method: 'post',
+    data
+  })
+}

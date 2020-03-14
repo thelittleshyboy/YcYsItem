@@ -1,8 +1,0 @@
-{
-  "navigationBarTitleText": "首页",
-  "usingComponents": {
-    "uni-card": "/components/uni-card/uni-card",
-    "yangr-msg": "/components/yangr-msg/yangr-msg",
-    "top-bar": "/pages/topBar/topBar"
-  }
-}

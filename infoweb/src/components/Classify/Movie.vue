@@ -37,9 +37,9 @@
               </el-row>
               <el-row>
                 <el-rate
-                  v-model="rate"
+                  v-model="item.trueRate"
                   disabled
-                  show-score
+                  show-text
                   text-color="#ff9900"
                   score-template="{value}"
                   style="float:right;margin-right:25px;margin-top:10px"
@@ -142,6 +142,10 @@ export default {
       getAllList({ region: this.searchValue, page: this.page }).then(res => {
         if (res.data.status === "success") {
           this.myList = res.data.data;
+          this.myList.forEach(el => {
+            let nowArray = el.rate.map(item => item.rate)
+            el.trueRate = (nowArray.reduce((a, b)=>{return Number(a) + Number(b) }, 0)) / nowArray.length
+          })
           this.pageSize = res.data.pageSize;
           this.totalNum = res.data.total;
         }

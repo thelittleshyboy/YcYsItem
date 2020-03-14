@@ -23,7 +23,7 @@
               <div class="card-content">
                 <h3>{{ item.title | ellipsis(10) }}</h3>
                 <h5>#{{ item.region }}#</h5>
-                <div>{{ item.desc | ellipsis(46) }}</div>
+                <div>{{ item.desc | ellipsis(30) }}</div>
               </div>
             </el-card>
           </router-link>
