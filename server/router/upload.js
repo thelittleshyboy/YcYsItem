@@ -28,7 +28,11 @@ upload.post('/upload', uploads.single('file'), (req, res) => {
   var file = req.file
   User.updateOne({ _id: req.body.userId }, {
     $set: {
-      headImg: envUrl + file.filename
+      userName: req.body.userName,
+      headImg: envUrl + file.filename,
+      sign: req.body.sign,
+      birth: req.body.birth,
+      place: req.body.place
     }
   }, (err) => {
     if (err) {

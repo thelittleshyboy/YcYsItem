@@ -64,7 +64,11 @@ router.route("/register").post((req, res) => {
                               time: time,
                               jurisdiction: 'user',
                               status: true,
-		              headImg: '175.24.73.40:80/none.jpg'
+                              headImg: '175.24.73.40:80/none.jpg',
+                              birth: '未填写', 
+                              place: '未填写', 
+                              sex: '未填写', 
+                              sign: null
                          });
                          users.save((err, res) => {
                               if (err) console.log(err);
@@ -97,7 +101,10 @@ router.route("/comment").post((req, res) => {
           if (err) console.log(err);
      })
      res.send({
-          status: 'success'
+          status: 'success',
+          data: { comment: req.body.comment,
+                  userName: req.body.auid
+          }
      });
 });
 
@@ -193,6 +200,76 @@ router.route("/all-article").post((req, res) => {
      }).sort({ time: -1 }).limit(8)
           .skip((page - 1) * 8);
 });
+
+// 文章评分
+router.route("/rate").post((req, res) => {
+     let dealData
+     Blog.findOne({ _id: req.body.articleId }, (err, data)=> {
+          if (err) {
+               res.send({
+                    status: 'failed',
+                    data: '发生错误！'
+               })
+          } else if (data.rate && data.rate.length != 0) {
+               let ifRate = data.rate.find(el => el.auid === req.body.auid)
+               if (!ifRate) {
+                    data.rate.push(req.body)
+                    Blog.updateOne({ _id: req.body.articleId }, {
+                         $set: {
+                              rate: data.rate
+                         }
+                    }, (err) => {
+                         if (err) {
+                              res.send({
+                                   status: 'failed'
+                              });
+                         }
+                         res.send({
+                              status: 'success'
+                         });
+                    }) 
+               } else {
+                    data.rate.forEach(item => {
+                         if (item.auid === req.body.auid) {
+                            item.rate = req.body.rate
+                         }
+                    })
+                    Blog.updateOne({ _id: req.body.articleId }, {
+                         $set: {
+                              rate: data.rate
+                         }
+                    }, (err) => {
+                         if (err) {
+                              res.send({
+                                   status: 'failed'
+                              });
+                         }
+                         res.send({
+                              status: 'success'
+                         });
+                    }) 
+               }
+          } else {
+               data.rate.push(req.body)
+               Blog.updateOne({ _id: req.body.articleId }, {
+                    $set: {
+                         rate: data.rate
+                    }
+               }, (err) => {
+                    if (err) {
+                         res.send({
+                              status: 'failed'
+                         });
+                    }
+                    res.send({
+                         status: 'success'
+                    });
+               })
+          }
+
+     })
+});
+
 
 // 话题管理新增话题
 router.route("/add-topic").post((req, res) => {

@@ -3,8 +3,9 @@ const  mongoose = require('mongoose')
 var userSchema = new mongoose.Schema({
     userName: String,
     passWord : String,
-    design: String,
-    sex: String,
+    birth: String, // 生日
+    place: String, // 地点
+    sex: String, // 性别
     sign: String, // 签名
     Collection: Array, // 收藏
     thumbsUp: Array, // 点赞
