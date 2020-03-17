@@ -1,11 +1,10 @@
 import request from '../utils/request'
 
-export function sendInfo(data, {headers}) {
+export function sendInfo(data) {
     return request({
         url: '/upload/issue',
         method: 'post',
-        data,
-        headers
+        data
     })
 }
 
@@ -33,12 +32,11 @@ export function deleteArticle(data) {
     })
 }
 
-export function editArticle(data, {headers}) {
+export function editArticle(data) {
     return request({
         url: '/upload/edit-article',
         method: 'post',
-        data,
-        headers
+        data
     })
 }
 
@@ -82,12 +80,20 @@ export function getComment(data) {
     })
 }
 
-export function upload(data, {headers}) {
+// export function upload(data, {headers}) {
+//     return request({
+//         url: '/upload/upload',
+//         method: 'post',
+//         data,
+//         headers
+//     })
+// }
+
+export function myself(data) {
     return request({
-        url: '/upload/upload',
+        url: '/upload/myself',
         method: 'post',
-        data,
-        headers
+        data
     })
 }
 

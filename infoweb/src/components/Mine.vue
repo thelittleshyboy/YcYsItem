@@ -31,7 +31,7 @@
         <el-tab-pane label="个人资料" name="personalInfo">
           <el-form ref="infoForm" :model="infoForm" label-width="80px" v-loading="infoLoading">
             <el-form-item label="用户名">
-              <div style="float:left">{{ user }}</div>
+              <el-input v-model="userForm.userName"></el-input>
             </el-form-item>
             <el-form-item label="修改密码">
               <el-input v-model="userForm.password"></el-input>
@@ -40,26 +40,23 @@
               <el-input v-model="userForm.sign"></el-input>
             </el-form-item>
             <el-form-item label="性别">
-              <el-input v-model="userForm.password"></el-input>
+              <el-input v-model="userForm.sex"></el-input>
             </el-form-item>
             <el-form-item label="生日">
-              <el-input v-model="userForm.password"></el-input>
+              <el-input v-model="userForm.birth"></el-input>
             </el-form-item>
             <el-form-item label="地区">
-              <el-input v-model="userForm.password"></el-input>
+              <el-input v-model="userForm.place"></el-input>
             </el-form-item>
             <el-form-item label="上传头像">
               <el-upload
                 class="avatar-uploader"
                 :limit="1"
-                action="uploadPic"
-                :on-exceed="onLimit"
-                :file-list="fileList"
+                :action="imgAction"
                 list-type="picture-card"
-                :http-request="beforeUpload"
-                :on-change="changeFiles"
                 :on-preview="handlePictureCardPreview"
                 :on-remove="handleRemove"
+                :on-success="uploadSuccess"
                 style="float:left"
               >
                 <i class="el-icon-plus"></i>
@@ -108,14 +105,12 @@
               <el-upload
                 class="avatar-uploader"
                 :limit="1"
-                action="uploadPic"
-                :on-exceed="onLimit"
-                :file-list="fileList"
+                :action="imgAction"
                 list-type="picture-card"
-                :http-request="beforeUpload"
-                :on-change="changeFiles"
+                :file-list="fileList"
                 :on-preview="handlePictureCardPreview"
                 :on-remove="handleRemove"
+                :on-success="uploadCoverSuccess"
                 style="float:left"
               >
                 <i class="el-icon-plus"></i>
@@ -210,204 +205,243 @@
 </template>
 
 <script>
-import { sendInfo, getAuList, deleteArticle, editArticle, upload } from '../api/article'
-import { remoteSearch } from '../api/topic'
+import {
+  sendInfo,
+  getAuList,
+  deleteArticle,
+  editArticle,
+  myself
+} from "../api/article";
+import { remoteSearch } from "../api/topic";
 
 export default {
-  name: 'App',
+  name: "App",
   data() {
     return {
+      imgAction: 'http://175.24.73.40:3300/upload/upload',
       fileList: [],
       uploadFile: null,
       pageSize: 0,
       page: 1,
       totalNum: 0,
-      defaultObject: '自定义',
+      defaultObject: "自定义",
       topicOptions: [],
       dialogVisible: false,
       signInput: null,
       signShow: true,
-      sign: '签名是一种态度，我想我可以更酷！',
+      sign: "签名是一种态度，我想我可以更酷！",
       ifEdit: false,
-      activeName: 'sendInfo',
+      activeName: "sendInfo",
       manageLoading: false,
       rate: 3.7,
       infoLoading: false,
       infoForm: {
-        title: '',
+        title: "",
         tagSelected: null,
-        tagInput: '',
-        desc: '',
+        tagInput: "",
+        desc: "",
+        cover: '',
         userName: null
       },
       userForm: {
-        password: '',
+        userName: '',
+        password: "",
+        sign: '',
+        sex: '',
+        birth: '',
+        place: '',
+        headImg: ''
       },
       myList: []
-    }
+    };
   },
   computed: {
     url() {
-      return localStorage.getItem('user') ? 'http://' + JSON.parse(localStorage.getItem('user')).headImg : 'https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg'
+      return localStorage.getItem("user")
+        ? "http://" + JSON.parse(localStorage.getItem("user")).headImg
+        : "https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg";
     },
     srcList() {
-      return localStorage.getItem('user') ? ['http://' + JSON.parse(localStorage.getItem('user')).headImg] : ['https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg']
+      return localStorage.getItem("user")
+        ? ["http://" + JSON.parse(localStorage.getItem("user")).headImg]
+        : [
+            "https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg"
+          ];
     },
     user() {
-      return localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user')).userName : null
+      return localStorage.getItem("user")
+        ? JSON.parse(localStorage.getItem("user")).userName
+        : null;
     }
   },
   methods: {
+    uploadSuccess(res) {
+      this.userForm.headImg = res.data
+    },
+    uploadCoverSuccess(res) {
+      this.infoForm.cover = res.data
+    },
     init() {
       this.infoForm = {
-        title: '',
+        title: "",
         tagSelected: null,
-        tagInput: '',
-        desc: ''
-      }
+        tagInput: "",
+        desc: "",
+        cover: ''
+      };
+      this.fileList = []
     },
     onLimit() {
-      this.$message.error("头像只能上传一张")
+      this.$message.error("头像只能上传一张");
     },
-    changeFiles(file, fileList) {
-    },
+    changeFiles(file, fileList) {},
     beforeUpload(val) {
-      this.uploadFile = val.file
+      this.uploadFile = val.file;
     },
     current_change(index) {
-      this.page = index
-      this.getList({ index: '2' })
+      this.page = index;
+      this.getList({ index: "2" });
     },
     dealFormData(formDataList) {
       const formData = new FormData();
-      const headerConfig = { headers: { 'Content-Type': 'multipart/form-data' } };
-      if (!this.uploadFile) { // 若未选择文件
-        this.$message.error('请选择上传图片')
+      const headerConfig = {
+        headers: { "Content-Type": "multipart/form-data" }
+      };
+      if (!this.uploadFile) {
+        // 若未选择文件
+        this.$message.error("请选择上传图片");
         return false;
       }
       formDataList.forEach(item => {
-        formData.append(item.key, item.value)
-      })
-      return [formData, headerConfig]
+        formData.append(item.key, item.value);
+      });
+      return [formData, headerConfig];
     },
     onPersonalSubmit() {
-      let list = [{ key:'file',value: this.uploadFile }, { key: 'userId', value: JSON.parse(localStorage.getItem('user'))._id }]
-      upload(this.dealFormData(list)[0], this.dealFormData(list)[1]).then(res => {
-        if (res.data.status === "success") {
-          this.$message.success('修改成功,请重新登录')
-        }
-      }).catch((error) => {
-      })
+      myself(this.userForm)
+        .then(res => {
+          if (res.data.status === "success") {
+            this.$message.success("修改成功,请重新登录");
+          }
+        })
+        .catch(error => {});
     },
     remoteMethod(query) {
-      remoteSearch({ query: query.trim() }).then(res => {
-        if (res.data.status === "success") {
-          this.topicOptions = res.data.data
-        }
-      }).catch((error) => {
-        this.$message.error('失败！')
-      })
+      remoteSearch({ query: query.trim() })
+        .then(res => {
+          if (res.data.status === "success") {
+            this.topicOptions = res.data.data;
+          }
+        })
+        .catch(error => {
+          this.$message.error("失败！");
+        });
     },
     handlePictureCardPreview() {
-      this.dialogVisible = true
+      this.dialogVisible = true;
     },
-    handleRemove() { },
+    handleRemove() {},
     showInput() {
-      this.signShow = false
-      this.signInput = this.sign
+      this.signShow = false;
+      this.signInput = this.sign;
     },
     saveSign() {
-      this.sign = this.signInput
-      this.signShow = true
+      this.sign = this.signInput;
+      this.signShow = true;
     },
     onSubmit() {
-      this.infoLoading = true
-      if (localStorage.getItem('user')) {
-        this.infoForm.userName = JSON.parse(localStorage.getItem('user')).userName
+      this.infoLoading = true;
+      if (localStorage.getItem("user")) {
+        this.infoForm.userName = JSON.parse(
+          localStorage.getItem("user")
+        ).userName;
       }
-      if (!this.infoForm.title || !this.infoForm.tagSelected || !this.infoForm.tagInput || !this.infoForm.desc || !this.infoForm.userName) {
-        if (this.infoForm.tagSelected === '自定义' && !this.infoForm.tagInput) {
-          this.$message.error('信息不能有空')
-          this.infoLoading = false
-          return
+      if (
+        !this.infoForm.title ||
+        !this.infoForm.tagSelected ||
+        !this.infoForm.tagInput ||
+        !this.infoForm.desc ||
+        !this.infoForm.userName ||
+        !this.infoForm.cover
+      ) {
+        if (this.infoForm.tagSelected === "自定义" && !this.infoForm.tagInput) {
+          this.$message.error("信息不能有空");
+          this.infoLoading = false;
+          return;
         }
       }
-      let infoFormList = []
-      for (let prop in this.infoForm) {
-        infoFormList.push({
-          key: prop,
-          value: this.infoForm[prop]
-        })
-      }
-      infoFormList = [{ key:'file',value: this.uploadFile }, ...infoFormList]
-      sendInfo(this.dealFormData(infoFormList)[0], this.dealFormData(infoFormList)[1]).then(res => {
-        if (res.data.status === 'success') {
-          this.$message.success('发布成功')
-          this.init()
-          this.fileList = []
-          this.infoLoading = false
+      sendInfo(
+        this.infoForm
+      ).then(res => {
+        if (res.data.status === "success") {
+          this.$message.success("发布成功");
+          this.init();
+          this.infoLoading = false;
         } else {
-          this.$message.error(res.data.data)
-          this.infoLoading = false
+          this.$message.error(res.data.data);
+          this.infoLoading = false;
         }
-      }), err => {
-        this.$message.error('发布失败')
-        this.init()
-        this.infoLoading = false
-      }
+      }),
+        err => {
+          this.$message.error("发布失败");
+          this.init();
+          this.infoLoading = false;
+        };
     },
     getList(tab) {
-      if (JSON.parse(localStorage.getItem('user')).userName && tab.index === '2') {
-        getAuList({ userName: JSON.parse(localStorage.getItem('user')).userName, page: this.page }).then(res => {
-          if (res.data.status === 'success') {
-            this.myList = res.data.data
-            this.pageSize = res.data.pageSize
-            this.totalNum = res.data.total
+      if (
+        JSON.parse(localStorage.getItem("user")).userName &&
+        tab.index === "2"
+      ) {
+        getAuList({
+          userName: JSON.parse(localStorage.getItem("user")).userName,
+          page: this.page
+        }).then(res => {
+          if (res.data.status === "success") {
+            this.myList = res.data.data;
+            this.pageSize = res.data.pageSize;
+            this.totalNum = res.data.total;
           }
-        }), err => {
-        }
+        }),
+          err => {};
       }
     },
     del(item, index) {
       deleteArticle({ id: item._id }).then(res => {
-        if (res.data.status === 'success') {
-          getAuList({ userName: JSON.parse(localStorage.getItem('user')).userName }).then(res => {
-            if (res.data.status === 'success') {
-              this.myList = res.data.data
-              this.$message.success('删除成功')
+        if (res.data.status === "success") {
+          getAuList({
+            userName: JSON.parse(localStorage.getItem("user")).userName
+          }).then(res => {
+            if (res.data.status === "success") {
+              this.myList = res.data.data;
+              this.$message.success("删除成功");
             }
-          }), err => {
-            this.$message.success('删除失败')
-          }
+          }),
+            err => {
+              this.$message.success("删除失败");
+            };
         }
-      }), err => {
-      }
+      }),
+        err => {};
     },
     backForm(item) {
-      this.infoForm = Object.assign({}, item)
-      this.infoForm.tagSelected = item.region
-      this.activeName = 'sendInfo'
-      this.ifEdit = true
+      this.infoForm = Object.assign({}, item);
+      this.infoForm.tagSelected = item.region;
+      this.activeName = "sendInfo";
+      this.ifEdit = true;
     },
     onEdit(item) {
-      let editList = []
-      for (let prop in this.infoForm) {
-        editList.push({
-          key: prop,
-          value: this.infoForm[prop]
-        })
-      }
-      editList = [{ key:'file',value: this.uploadFile }, ...editList]
-      editArticle(this.dealFormData(editList)[0], this.dealFormData(editList)[1]).then(res => {
-        if (res.data.status === 'success') {
-          this.$message.success('编辑成功')
-          this.init()
+      editArticle(this.infoForm
+      ).then(res => {
+        if (res.data.status === "success") {
+          this.$message.success("编辑成功");
+          this.init();
         }
-      }), err => {
-      }
+      }),
+        err => {};
     }
   }
-}
+};
 </script>
 
 <style>
