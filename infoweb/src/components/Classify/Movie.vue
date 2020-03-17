@@ -17,13 +17,13 @@
             </router-link>
             <el-col :span="18">
               <el-row>
-                <el-col :span="14">
+                <el-col :span="22">
                   <div style="margin-left:25px">#{{ item.region }}#</div>
                   <h2
                     style="float:left;margin-left:25px;color:black"
                   >{{ item ? item.title : '' | ellipsis(20) }}</h2>
                 </el-col>
-                <el-col :span="10">
+                <el-col :span="2">
                   <el-row style="margin-top:10px;float:right;margin-right:20px">
                     <el-button type="primary" icon="el-icon-back" circle @click="handleWatch(item)"></el-button>
                   </el-row>

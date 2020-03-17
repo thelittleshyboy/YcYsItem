@@ -176,6 +176,7 @@ export default {
   width: 100%;
   height: 150px;
   text-align: center;
+  overflow: hidden;
 }
 
 .hot-user {
@@ -243,7 +244,7 @@ export default {
 .card-list {
   margin-top: 10px;
   margin-left: 10px;
-  width: 280px;
+  width: 260px;
 }
 
 .card-style {
