@@ -1,7 +1,46 @@
 ﻿<template>
   <div id="app">
     <el-container>
-      <el-aside width="180px">
+      <el-header height="80px">
+          <el-row>
+            <el-col :span="2">
+              <img
+                src="../static/webtitle.png"
+                style="padding:13px;width: 70px;height: 50px"
+              />
+            </el-col>
+            <el-col :span="10">
+              <span class="main-title">有创意信息发布站</span>
+            </el-col>
+            <el-col :span="11">
+              <div class="search-input">
+                <el-select
+                  v-model="searchValue"
+                  filterable
+                  remote
+                  reserve-keyword
+                  placeholder="请输入文章标题搜索"
+                  :remote-method="remoteMethod"
+                  clearable
+                  :loading="remoteLoading"
+                  @change="searchArticle"
+                  style="width:400px"
+                >
+                  <el-option
+                    v-for="(item, index) in searchOptions"
+                    :key="index"
+                    :label="item"
+                    :value="item"
+                  ></el-option>
+                </el-select>
+                <!-- <el-input placeholder="请输入文章标题搜索" v-model="searchValue">
+              <el-button slot="append" icon="el-icon-search" @click="searchArticle"></el-button>
+                </el-input>-->
+              </div>
+            </el-col>
+          </el-row>
+        </el-header>
+        <el-aside width="180px">
         <span v-if="!user">
           <el-button
             type="text"
@@ -51,6 +90,7 @@
                   <span>管理</span>
                 </template>
                 <el-menu-item-group>
+                  <el-menu-item index="/manage/mainmanage">管理主页</el-menu-item>
                   <el-menu-item index="/manage/infomanage">信息管理</el-menu-item>
                   <el-menu-item index="/manage/usermanage">用户管理</el-menu-item>
                   <el-menu-item index="/manage/topicmanage">话题管理</el-menu-item>
@@ -59,51 +99,10 @@
             </el-menu>
           </el-col>
         </el-row>
-      </el-aside>
-      <el-container>
-        <el-header height="80px">
-          <el-row>
-            <el-col :span="2">
-              <img
-                src="../static/webtitle.png"
-                style="padding:13px;width: 70px;height: 50px"
-              />
-            </el-col>
-            <el-col :span="10">
-              <span class="main-title">有创意信息发布站</span>
-            </el-col>
-            <el-col :span="11">
-              <div class="search-input">
-                <el-select
-                  v-model="searchValue"
-                  filterable
-                  remote
-                  reserve-keyword
-                  placeholder="请输入文章标题搜索"
-                  :remote-method="remoteMethod"
-                  clearable
-                  :loading="remoteLoading"
-                  @change="searchArticle"
-                  style="width:400px"
-                >
-                  <el-option
-                    v-for="(item, index) in searchOptions"
-                    :key="index"
-                    :label="item"
-                    :value="item"
-                  ></el-option>
-                </el-select>
-                <!-- <el-input placeholder="请输入文章标题搜索" v-model="searchValue">
-              <el-button slot="append" icon="el-icon-search" @click="searchArticle"></el-button>
-                </el-input>-->
-              </div>
-            </el-col>
-          </el-row>
-        </el-header>
-        <el-main style="padding:0">
+        </el-aside>
+        <el-main style="padding:0;overflow:hidden">
           <router-view />
         </el-main>
-      </el-container>
     </el-container>
     <el-dialog
       title="欢迎来到XX"
@@ -326,6 +325,10 @@ export default {
 }
 .el-container .el-aside {
   padding-top: 20px;
+}
+.el-header {
+  background-image: url('./assets/headBack.png');
+  margin-left: 180px
 }
 .el-dialog {
   background-image: url("./assets/backImg.jpg");

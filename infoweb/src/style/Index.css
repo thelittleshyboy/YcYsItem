@@ -6,7 +6,6 @@ html,body,#app,.el-container{
 }
 
 .el-header {
-    margin-left: 180px;
     background-color: white;
     /* border-bottom: 1px solid #dce2e4; */
     color: #333;

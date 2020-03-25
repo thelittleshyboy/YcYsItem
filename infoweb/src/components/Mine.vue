@@ -17,7 +17,7 @@
                 margin-right: 10px;"
           @click="showInput"
         ></i>
-        <span v-if="signShow">{{ sign }}</span>
+        <span v-if="signShow">{{ userForm.sign }}</span>
         <span v-else>
           <el-input
             v-model="signInput"
@@ -34,7 +34,7 @@
               <el-input v-model="userForm.userName"></el-input>
             </el-form-item>
             <el-form-item label="修改密码">
-              <el-input v-model="userForm.password"></el-input>
+              <el-input type="password" v-model="userForm.passWord"></el-input>
             </el-form-item>
             <el-form-item label="签名">
               <el-input v-model="userForm.sign"></el-input>
@@ -198,7 +198,6 @@
             style="position: absolute;bottom: 10px;left: 45%;"
           ></el-pagination>
         </el-tab-pane>
-        <el-tab-pane label="点赞与收藏">点赞与收藏</el-tab-pane>
       </el-tabs>
     </div>
   </div>
@@ -229,7 +228,6 @@ export default {
       dialogVisible: false,
       signInput: null,
       signShow: true,
-      sign: "签名是一种态度，我想我可以更酷！",
       ifEdit: false,
       activeName: "sendInfo",
       manageLoading: false,
@@ -245,8 +243,8 @@ export default {
       },
       userForm: {
         userName: '',
-        password: "",
-        sign: '',
+        passWord: "",
+        sign: "签名是一种态度，我想我可以更酷！",
         sex: '',
         birth: '',
         place: '',
@@ -273,6 +271,10 @@ export default {
         ? JSON.parse(localStorage.getItem("user")).userName
         : null;
     }
+  },
+  mounted() {
+    console.log(JSON.parse(localStorage.getItem("user")))
+    this.userForm = JSON.parse(localStorage.getItem("user"))
   },
   methods: {
     uploadSuccess(res) {

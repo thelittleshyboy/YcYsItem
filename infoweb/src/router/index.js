@@ -52,6 +52,15 @@ const router = new Router({
       }
     },
     {
+      path: '/manage/mainmanage',
+      name: 'MainManage',
+      component: () => import('@/components/Manage/MainManage'),
+      meta: { 
+        title: '管理主页',
+        needLogin: true
+      }
+    },
+    {
       path: '/manage/topicmanage',
       name: 'TopicManage',
       component: () => import('@/components/Manage/TopicManage'),

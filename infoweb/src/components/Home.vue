@@ -1,12 +1,34 @@
 <template>
   <div>
-    <div class="main-left">
-      <el-carousel height="400px" class="carousel">
+    <div class="main-header">
+      <el-carousel height="400px" class="carousel" style="width: 75%">
         <el-carousel-item v-for="item in imgList" :key="item.idView">
           <img :src="item.idView" style="width:100%;height:400px" />
         </el-carousel-item>
       </el-carousel>
-      <h2>
+      <div class="hot-user">
+      <h2>活跃用户</h2>
+      <div class="hot-user-headimg">
+        <div v-for="(item, index) in hotUserList" :key="index" style="margin-left: 15px">
+          <img
+            :key="index"
+            :src="'http://'+item.headImg"
+            style="width:50px;height:50px;border-radius: 25px"
+          />
+          <div style="font-size: 10px">{{ item.userName }}</div>
+        </div>
+      </div>
+    </div>
+    <div class="hot-title">
+      <h2>最新话题</h2>
+      <div class="hot-title-topic">
+      <div v-for="(item, index) in topicNewList" :key="index" style="margin-left:5px">
+        <el-button type="text" style="color: #333;" @click="jumpTopic(item)">#{{ item.topicName }}</el-button>
+      </div>
+      </div>
+    </div>
+    </div>
+    <h2>
         <span v-if="searchValue">搜索结果</span>
         <span v-if="!searchValue">精选推荐</span>
       </h2>
@@ -14,16 +36,16 @@
       <div class="card-list-outside" v-loading="cardListLoading">
         <div class="card-list" v-for="(item, index) in allList" :key="index">
           <router-link :to="{name:'DetailsArticle',params:{id:item._id}}">
-            <el-card class="card-style">
+            <el-card class="card-style" :body-style="{ padding: '0px' }">
               <img
                 :key="index"
                 :src="item.cover ? 'http://'+item.cover : 'https://fuss10.elemecdn.com/8/27/f01c15bb73e1ef3793e64e6b7bbccjpeg.jpeg'"
                 class="image"
               />
               <div class="card-content">
-                <h3>{{ item.title | ellipsis(10) }}</h3>
-                <h5>#{{ item.region }}#</h5>
-                <div>{{ item.desc | ellipsis(30) }}</div>
+                <h4>{{ item.title | ellipsis(12) }}</h4>
+                <span class="left-user"><i class="el-icon-user-solid" style="margin-right:10px"></i>{{ item.Auid }}</span>
+                <span class="right-thumb"><i class="el-icon-thumb" style="margin-left:160px"></i>{{ item.thumb || 0 }}</span>
               </div>
             </el-card>
           </router-link>
@@ -39,26 +61,6 @@
         @current-change="current_change"
         style="margin-top: 20px"
       ></el-pagination>
-    </div>
-    <div class="hot-user">
-      <h2>活跃用户</h2>
-      <div class="hot-user-headimg">
-        <div v-for="(item, index) in hotUserList" :key="index" style="margin-left: 15px">
-          <img
-            :key="index"
-            :src="'http://'+item.headImg"
-            style="width:50px;height:50px;border-radius: 25px"
-          />
-          <div style="font-size: 10px">{{ item.userName }}</div>
-        </div>
-      </div>
-    </div>
-    <div class="hot-title">
-      <h2>最新话题</h2>
-      <div v-for="(item, index) in topicNewList" :key="index">
-        <el-button type="text" style="color: #333;" @click="jumpTopic(item)">#{{ item.topicName }}</el-button>
-      </div>
-    </div>
   </div>
 </template>
 
@@ -166,7 +168,8 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 .main-left {
-  width: 70%;
+  width: 100%;
+  position: relative;
 }
 
 .hot-user-headimg {
@@ -183,7 +186,7 @@ export default {
   width: 15%;
   height: 200px;
   position: absolute;
-  top: 100px;
+  top: 80px;
   right: 3%;
   background: #f2f2f5;
   padding: 20px;
@@ -194,15 +197,22 @@ export default {
 
 .hot-title {
   width: 15%;
-  height: 500px;
+  height: 150px;
   position: absolute;
-  top: 400px;
+  top: 330px;
   right: 3%;
   background: #f2f2f5;
-  padding: 20px;
+  padding: 5px 20px;
   border-top: 1px solid #fa2f2f;
   margin-bottom: 20px;
   text-align: center;
+}
+
+.hot-title-topic {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  overflow: hidden;
 }
 
 .el-carousel__item:nth-child(2n) {
@@ -229,8 +239,9 @@ export default {
 
 .image {
   width: 100%;
-  height: 200px;
+  height: 180px;
   display: block;
+  margin: 0
 }
 
 .card-list-outside {
@@ -242,21 +253,44 @@ export default {
 }
 
 .card-list {
-  margin-top: 10px;
-  margin-left: 10px;
-  width: 260px;
+  margin-top: 20px;
+  margin-left: 20px;
+  width: 300px;
 }
 
 .card-style {
-  width: 250px;
-  height: 400px;
+  width: 300px;
+  height: 280px;
   line-height: 20px;
   cursor: pointer;
+  text-align: left;
+  padding: 0px;
 }
+
+.card-style:hover {
+  transform: scale(1.1)
+}
+
 .card-content {
   text-decoration: none;
-  height: 300px;
+  height: 200px;
+  padding: 10px 20px;
 }
+
+.card-content h4{
+  color: #333;
+  font-size: 15px;
+}
+
+.card-content span {
+  color: #888;
+  font-size: 12px;
+}
+
+.card-content span .left-user {
+  text-align: left;
+}
+
 a {
   text-decoration: none;
 }
