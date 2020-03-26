@@ -6,7 +6,7 @@
           <div v-show="myList.length===0">没有搜索到结果哦~</div>
           <el-row v-for="(item, index) in myList" :key="index" class="details-info">
             <router-link :to="{name:'DetailsArticle',params:{id:item._id}}">
-              <el-col :span="6">
+              <el-col :span="8">
                 <div class="demo-image__preview">
                   <el-image
                     style="width: 100%; height: 220px;"
@@ -15,7 +15,7 @@
                 </div>
               </el-col>
             </router-link>
-            <el-col :span="18">
+            <el-col :span="16">
               <el-row>
                 <el-col :span="22">
                   <div style="margin-left:25px">#{{ item.region }}#</div>
@@ -204,6 +204,7 @@ export default {
   margin-top: 10px;
   line-height: 20px;
   text-align: left;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, .12), 0 0 6px rgba(0, 0, 0, .04)
 }
 .history-search {
   width: 100%;

@@ -15,3 +15,18 @@ export function userDelete(data) {
         data
     })
 }
+
+
+export function blogStatistics() {
+    return request({
+        url: '/user/blog-statistics',
+        method: 'get'
+    })
+}
+
+export function numStatistics() {
+    return request({
+        url: '/user/num-statistics',
+        method: 'get'
+    })
+}
