@@ -65,12 +65,12 @@ router.route("/register").post((req, res) => {
                               jurisdiction: 'user',
                               status: true,
                               headImg: '175.24.73.40:80/none.jpg',
-                              birth: '未填写', 
-                              place: '未填写', 
-                              sex: '未填写', 
-                              sign: null
+                              birth: '', 
+                              place: '', 
+                              sex: '', 
+                              sign: ''
                          });
-                         users.save((err, res) => {
+                         users.save((err, res) => {``
                               if (err) console.log(err);
                          });
                          res.send({
@@ -168,6 +168,48 @@ router.route("/all-user").post((req, res) => {
           .skip((userPage - 1) * 10);
 });
 
+router.route("/blog-statistics").get((req, res) => {
+     let startTime = new Date(`${new Date().getFullYear()}-${new Date().getMonth()+1}-${new Date().getDate()} 00:00:00`).getTime()
+     let endTime = new Date(`${new Date().getFullYear()}-${new Date().getMonth()+1}-${new Date().getDate()} 23:59:59`).getTime()
+     Blog.find({"$and":[{time:{"$gt":startTime}},{time:{"$lt":endTime}}]}, (err, blog) => {
+          if (err) {
+               console.log(err);
+          }
+          res.send({
+               status: 'success',
+               data: blog
+          });
+     })
+});
+
+router.route("/num-statistics").get((req, res) => {
+     var statisticsList = []
+     const a = new Promise((next, err) => {
+          for (let i = 0;i < 7;i++) {
+               let startTime = new Date(`${new Date().getFullYear()}-${new Date().getMonth()+1}-${new Date().getDate()- i} 00:00:00`).getTime()
+               let endTime = new Date(`${new Date().getFullYear()}-${new Date().getMonth()+1}-${new Date().getDate() - i} 23:59:59`).getTime()
+               Blog.find({"$and":[{time:{"$gt":startTime}},{time:{"$lt":endTime}}]}, (error, blog) => {
+                    if (error) {
+                         err(error)
+                    }
+                    statisticsList.push(blog)
+                    if (i === 6) {
+                         next(statisticsList)
+                    }
+               })
+          }
+     })
+     a.then(r => {
+          console.log(r)
+          res.send({
+               status: 'success',
+               data: r
+          });
+     }).catch(e => {
+          console.log(e)
+     })
+});
+
 // 首页数据
 router.route("/all-article").post((req, res) => {
      const infoObject = req.body
@@ -195,10 +237,10 @@ router.route("/all-article").post((req, res) => {
                status: 'success',
                data: blog,
                total: articleLength,
-               pageSize: 8
+               pageSize: 15
           });
-     }).sort({ time: -1 }).limit(8)
-          .skip((page - 1) * 8);
+     }).sort({ time: -1 }).limit(15)
+          .skip((page - 1) * 15);
 });
 
 // 文章评分
@@ -451,9 +493,28 @@ router.route("/article-thumb-on").post((req, res) => {
                               status: 'failed'
                          });
                     }
-                    res.send({
-                         status: 'success'
-                    });
+                    Blog.findOne({ _id: req.body.id }, (err, blogData) => {
+                         if (err) {
+                              res.send({
+                                   status: 'failed'
+                              });
+                         }
+                         console.log(blogData)
+                         Blog.updateOne({ _id: req.body.id }, {
+                              $set: {
+                                   thumb: blogData.thumb ? blogData.thumb+1 : 1
+                              }
+                         }, (err) => {
+                              if (err) {
+                                   res.send({
+                                        status: 'failed'
+                                   });
+                              }
+                              res.send({
+                                   status: 'success'
+                              });
+                         })
+                    })
                })
           }
      })
