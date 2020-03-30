@@ -6,7 +6,8 @@ var blogSchema=new mongoose.Schema({
     time: String,
     Auid : String,
     cover: String,
-    rate: Array
+    rate: Array,
+    thumb: Number
 })
 
 module.exports = mongoose.model('Blog',blogSchema);

@@ -5,6 +5,7 @@ var User = require("../models/user");
 var Tag = require("../models/tag");
 var Blog = require("../models/blog");
 var upload = express();
+var crypto = require('crypto');
 
 var storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -19,21 +20,47 @@ var uploads = multer({
   storage: storage
 })
 
-//上传头像
-
+//单张上传图片
 upload.post('/upload', uploads.single('file'), (req, res) => {
   console.log(req.body);//获取到的age和name
   console.log(req.file);//获取到的文件
   //做些其他事情
   var file = req.file
-  User.updateOne({ _id: req.body.userId }, {
-    $set: {
-      userName: req.body.userName,
-      headImg: envUrl + file.filename,
-      sign: req.body.sign,
-      birth: req.body.birth,
-      place: req.body.place
+  if (file) {
+    res.send({
+      status: 'success',
+      data: envUrl + file.filename,
+    });
+  } else {
+    res.send({
+      status: 'success',
+      data: '系统未检测到图片',
+    });
+  }
+})
+
+
+upload.post('/myself', (req, res) => {
+  //做些其他事情
+  let updateObj = {
+    userName: req.body.userName,
+    headImg: req.body.headImg,
+    sign: req.body.sign,
+    birth: req.body.birth,
+    place: req.body.place,
+    sex: req.body.sex,
+    passWord: req.body.passWord
+  }
+  for (let i in updateObj) {
+    if (!updateObj[i]) {
+      delete updateObj[i]
     }
+  }
+  if(updateObj.passWord) {
+    updateObj.passWord = crypto.createHash('md5').update(updateObj.passWord).digest('hex').toUpperCase();
+  }
+  User.updateOne({ _id: req.body.userId }, {
+    $set: updateObj
   }, (err) => {
     if (err) {
       res.send({
@@ -42,7 +69,7 @@ upload.post('/upload', uploads.single('file'), (req, res) => {
     }
     res.send({
       status: 'success',
-      headImg: envUrl + file.filename
+      data: updateObj
     });
   })
 })
@@ -80,7 +107,7 @@ upload.post('/issue', uploads.single('file'), (req, res) => {
             desc: req.body.desc,
             time: sendArticleTime,
             Auid: req.body.userName,
-            cover: envUrl + req.file.filename
+            cover: req.body.cover
           });
           blogs.save((err, resData) => {
             if (err) {
@@ -89,7 +116,8 @@ upload.post('/issue', uploads.single('file'), (req, res) => {
               })
             }
             res.send({
-              status: 'success'
+              status: 'success',
+              cover: req.body.cover
             })
           });
         }
@@ -102,7 +130,7 @@ upload.post('/issue', uploads.single('file'), (req, res) => {
       desc: req.body.desc,
       time: sendArticleTime,
       Auid: req.body.userName,
-      cover: envUrl + req.file.filename
+      cover: req.body.cover
     });
     blogs.save((err, resData) => {
       if (err) {
@@ -111,14 +139,15 @@ upload.post('/issue', uploads.single('file'), (req, res) => {
         })
       }
       res.send({
-        status: 'success'
+        status: 'success',
+        cover: req.body.cover
       })
     });
   }
 })
 
 // 编辑页面
-upload.post('/edit-article', uploads.single('file'), (req, res) => {
+upload.post('/edit-article', (req, res) => {
   console.log(req.body);//获取到的age和name
   console.log(req.file);//获取到的文件
   //做些其他事情
@@ -149,7 +178,7 @@ upload.post('/edit-article', uploads.single('file'), (req, res) => {
               title: req.body.title,
               region: req.body.tagInput,
               desc: req.body.desc,
-              cover: envUrl+req.file.filename
+              cover: req.body.cover
             }
           }, (err, blog) => {
             if (err) {
@@ -171,7 +200,7 @@ upload.post('/edit-article', uploads.single('file'), (req, res) => {
         title: req.body.title,
         region: req.body.tagSelected,
         desc: req.body.desc,
-        cover: envUrl+req.file.filename
+        cover: req.body.cover
       }
     }, (err, blog) => {
       if (err) {

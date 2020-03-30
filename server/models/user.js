@@ -11,7 +11,8 @@ var userSchema = new mongoose.Schema({
     thumbsUp: Array, // 点赞
     jurisdiction: String,
     headImg: String,// 头像
-    status: Boolean // 号码状态
+    status: Boolean, // 号码状态
+    time: String
 })
 
 module.exports = mongoose.model('User',userSchema);
