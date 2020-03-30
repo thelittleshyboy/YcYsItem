@@ -10,6 +10,14 @@ import 'echarts/lib/chart/line';
 import 'element-ui/lib/theme-chalk/index.css'
 import store from './store/store.js'
 import * as filters from './filters/index' // global filters
+import VueQuillEditor from 'vue-quill-editor'
+ 
+// require styles
+import 'quill/dist/quill.core.css'
+import 'quill/dist/quill.snow.css'
+import 'quill/dist/quill.bubble.css'
+ 
+Vue.use(VueQuillEditor, /* { default global options } */)
 
 Vue.use(ElementUI)
 Object.keys(filters).forEach(key => {

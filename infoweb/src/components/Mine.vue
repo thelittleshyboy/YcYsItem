@@ -119,7 +119,7 @@
                 <img width="100%" alt />
               </el-dialog>
             </el-form-item>
-            <el-form-item label="信息内容">
+            <!-- <el-form-item label="信息内容">
               <el-input
                 type="textarea"
                 v-model="infoForm.desc"
@@ -127,8 +127,14 @@
                 :rows="20"
                 show-word-limit
               ></el-input>
+            </el-form-item>-->
+            <el-form-item label="信息内容">
+            <quill-editor
+              v-model="infoForm.desc"
+              ref="myQuillEditor"
+            ></quill-editor>
             </el-form-item>
-            <el-form-item>
+            <el-form-item style="margin-top: 50px">
               <el-button type="primary" @click="onEdit" v-show="ifEdit">确定编辑</el-button>
               <el-button type="primary" @click="onSubmit" v-show="!ifEdit">立即创建</el-button>
               <el-button @click="init">重置</el-button>
@@ -217,7 +223,7 @@ export default {
   name: "App",
   data() {
     return {
-      imgAction: 'http://175.24.73.40:3300/upload/upload',
+      imgAction: "http://175.24.73.40:3300/upload/upload",
       fileList: [],
       uploadFile: null,
       pageSize: 0,
@@ -238,17 +244,17 @@ export default {
         tagSelected: null,
         tagInput: "",
         desc: "",
-        cover: '',
+        cover: "",
         userName: null
       },
       userForm: {
-        userName: '',
+        userName: "",
         passWord: "",
         sign: "签名是一种态度，我想我可以更酷！",
-        sex: '',
-        birth: '',
-        place: '',
-        headImg: ''
+        sex: "",
+        birth: "",
+        place: "",
+        headImg: ""
       },
       myList: []
     };
@@ -273,15 +279,15 @@ export default {
     }
   },
   mounted() {
-    console.log(JSON.parse(localStorage.getItem("user")))
-    this.userForm = JSON.parse(localStorage.getItem("user"))
+    console.log(JSON.parse(localStorage.getItem("user")));
+    this.userForm = JSON.parse(localStorage.getItem("user"));
   },
   methods: {
     uploadSuccess(res) {
-      this.userForm.headImg = res.data
+      this.userForm.headImg = res.data;
     },
     uploadCoverSuccess(res) {
-      this.infoForm.cover = res.data
+      this.infoForm.cover = res.data;
     },
     init() {
       this.infoForm = {
@@ -289,9 +295,9 @@ export default {
         tagSelected: null,
         tagInput: "",
         desc: "",
-        cover: ''
+        cover: ""
       };
-      this.fileList = []
+      this.fileList = [];
     },
     onLimit() {
       this.$message.error("头像只能上传一张");
@@ -372,9 +378,8 @@ export default {
           return;
         }
       }
-      sendInfo(
-        this.infoForm
-      ).then(res => {
+      console.log(this.infoForm)
+      sendInfo(this.infoForm).then(res => {
         if (res.data.status === "success") {
           this.$message.success("发布成功");
           this.init();
@@ -433,8 +438,7 @@ export default {
       this.ifEdit = true;
     },
     onEdit(item) {
-      editArticle(this.infoForm
-      ).then(res => {
+      editArticle(this.infoForm).then(res => {
         if (res.data.status === "success") {
           this.$message.success("编辑成功");
           this.init();
